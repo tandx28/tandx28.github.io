@@ -9,6 +9,6 @@ year: '2026'
 status: live
 stack: [Canvas 2D, Stop motion, Animation]
 play: /lab/lights-out/
-cover: /shots/lights-out.jpg
+cover: ../../assets/shots/lights-out.jpg
 accent: '#ff5d8f'
 ---

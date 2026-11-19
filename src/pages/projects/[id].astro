@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const all = (await getCollection('projects'))
@@ -14,7 +15,19 @@ const { Content } = await render(p);
 const d = p.data;
 ---
 
-<Base title={`${d.title} · Tan De Xun`} description={d.tagline}>
+<Base
+  title={`${d.title} | Tan De Xun`}
+  description={d.tagline}
+  schema={{
+    '@type': d.live ? 'SoftwareApplication' : 'CreativeWork',
+    name: d.title,
+    description: d.tagline,
+    ...(d.live ? { url: d.live, applicationCategory: p.id === 'gatebound' ? 'GameApplication' : 'FinanceApplication', operatingSystem: 'Web browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'SGD' } } : {}),
+    ...(d.repo ? { codeRepository: d.repo } : {}),
+    author: { '@id': new URL('/#person', Astro.site).href },
+    keywords: d.stack.join(', '),
+  }}
+>
   <article style={`--acc:${d.accent}`}>
     <header class="container head">
       <a href="/#work" class="back mono">← cd ..</a>
@@ -36,7 +49,7 @@ const d = p.data;
     </header>
     {d.cover && (
       <div class="container" data-reveal>
-        <a class="shot" href={d.live} target="_blank" rel="noopener"><img src={d.cover} alt={`Screenshot of ${d.title}`} width="1280" height="800" /></a>
+        <a class="shot" href={d.live} target="_blank" rel="noopener"><Image src={d.cover} alt={`Screenshot of ${d.title}`} widths={[640, 1000, 1280]} sizes="(max-width: 1160px) 92vw, 1080px" format="webp" quality={78} loading="eager" class="shot-img" /></a>
       </div>
     )}
     <div class="container body">
@@ -127,12 +140,12 @@ const d = p.data;
     box-shadow: var(--shadow);
     margin-top: 20px;
   }
-  .shot img {
+  .shot :global(.shot-img) {
     width: 100%;
     height: auto;
     transition: transform 1.2s var(--ease);
   }
-  .shot:hover img {
+  .shot:hover :global(.shot-img) {
     transform: scale(1.02);
   }
   .body {

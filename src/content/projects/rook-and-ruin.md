@@ -9,6 +9,6 @@ year: '2026'
 status: live
 stack: [Three.js, WebGL, A* pathfinding, Web Audio]
 play: /lab/rook-and-ruin/
-cover: /shots/rook-and-ruin.jpg
+cover: ../../assets/shots/rook-and-ruin.jpg
 accent: '#ffb238'
 ---

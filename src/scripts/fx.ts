@@ -347,6 +347,9 @@ const GLYPHS = '!<>-_\\/[]{}—=+*^?#01ABCDEFXYZ';
 function scramble(el: HTMLElement, duration = 900) {
   if (reduced() || el.dataset.scrambled) return;
   el.dataset.scrambled = '1';
+  // Screen readers must hear the real words, not the random glyphs.
+  const heading = el.closest<HTMLElement>('h1, h2, h3');
+  if (heading && !heading.hasAttribute('aria-label')) heading.setAttribute('aria-label', heading.textContent!.replace(/\s+/g, ' ').trim());
   const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
   const nodes: { node: Text; text: string }[] = [];
   while (walker.nextNode()) {

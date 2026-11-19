@@ -2,16 +2,19 @@
 // Art for a project card: the screenshot when there is one, otherwise a small
 // drawn scene that hints at the work (routes for logistics, a page wireframe
 // for a website). Drawn in SVG so it follows the theme colours.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 interface Props {
   id: string;
   title: string;
-  cover?: string;
+  cover?: ImageMetadata;
 }
 const { id, title, cover } = Astro.props;
 ---
 
 {cover ? (
-  <img src={cover} alt={`Screenshot of ${title}`} loading="lazy" decoding="async" width="1280" height="800" />
+  <Image src={cover} alt={`Screenshot of ${title}`} widths={[480, 800, 1200]} sizes="(max-width: 860px) 92vw, 560px" format="webp" quality={72} class="art-img" />
 ) : id === 'astar' ? (
   <svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <g class="route">
@@ -40,7 +43,7 @@ const { id, title, cover } = Astro.props;
 )}
 
 <style>
-  img,
+  :global(.art-img),
   svg {
     position: absolute;
     inset: 0;
@@ -50,7 +53,7 @@ const { id, title, cover } = Astro.props;
     object-position: top center;
     transition: transform 1.2s var(--ease);
   }
-  :global(.card:hover) img {
+  :global(.card:hover .art-img) {
     transform: scale(1.04);
   }
   .route path {

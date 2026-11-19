@@ -9,6 +9,6 @@ year: '2026'
 status: live
 stack: [Canvas 2D, Stop motion, Animation]
 play: /lab/building-car-seven/
-cover: /shots/building-car-seven.jpg
+cover: ../../assets/shots/building-car-seven.jpg
 accent: '#ffc93c'
 ---

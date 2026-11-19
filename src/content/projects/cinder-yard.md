@@ -9,6 +9,6 @@ year: '2026'
 status: live
 stack: [Three.js, Procedural textures, Web Audio]
 play: /lab/cinder-yard/
-cover: /shots/cinder-yard.jpg
+cover: ../../assets/shots/cinder-yard.jpg
 accent: '#4fe3ff'
 ---

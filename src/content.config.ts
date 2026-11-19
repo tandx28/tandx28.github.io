@@ -5,7 +5,7 @@ import { glob } from 'astro/loaders';
 // the case-study page at /projects/<file name>.
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     tagline: z.string(),
     /** A few words for the terminal's ls listing. */
@@ -26,7 +26,7 @@ const projects = defineCollection({
     /** Two or three short facts shown as big numbers on the case study. */
     stats: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
     /** Screenshot under public/, shown on the card and case study. */
-    cover: z.string().optional(),
+    cover: image().optional(),
     accent: z.string().default('#5eead4'),
   }),
 });

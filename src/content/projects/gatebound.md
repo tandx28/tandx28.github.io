@@ -10,7 +10,7 @@ status: live
 stack: [TypeScript, Three.js, Vite, Vitest, Web Audio, GitHub Actions]
 live: https://tandx28.github.io/gatebound/
 repo: https://github.com/tandx28/gatebound
-cover: /shots/gatebound.jpg
+cover: ../../assets/shots/gatebound.jpg
 accent: '#60a5fa'
 stats:
   - { value: '27k', label: 'lines of TypeScript' }
