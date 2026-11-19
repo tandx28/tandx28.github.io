@@ -1,0 +1,480 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Building Car Seven</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;600&display=swap">
+<style>
+  /* Layout: a drawing-office sheet. The film is the blueprint; the slate under it reads like the drawing's title block. */
+  :root {
+    color-scheme: dark;
+    --bench: #0e1422;      /* desk around the sheet */
+    --sheet: #2a4a8f;      /* blueprint blue */
+    --paper: #f1ecdf;      /* white card */
+    --ink: #14171d;        /* black card */
+    --muted: #9aa9c7;      /* pencil notes */
+    --flag: #ffc93c;       /* marker yellow */
+    --rule: #2f426e;
+    --display: "Bowlby One", Impact, "Arial Black", sans-serif;
+    --body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bench);
+    color: var(--paper);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.5;
+    padding-block: 28px 40px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; }
+  h1 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 5.6vw, 44px); line-height: 1.05; margin: 0; color: var(--flag); text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); max-width: 58ch; flex: 1 1 280px; min-width: 0; }
+
+  .stage { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+  canvas { display: block; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; height: auto; }
+
+  .slate { border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: var(--ink); }
+  .slate dl { margin: 0; display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 2fr) minmax(0, 1fr) minmax(0, .8fr); }
+  .slate dl div { padding: 10px 14px; border-left: 1px solid var(--rule); min-width: 0; }
+  .slate dl div:first-child { border-left: 0; }
+  .slate dt { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .slate dd { margin: 2px 0 0; font-family: var(--mono); font-weight: 500; font-size: 17px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .slate p { margin: 0; padding: 10px 14px; border-top: 1px solid var(--rule); color: var(--paper); min-height: 2.9em; }
+  @media (max-width: 600px) {
+    .slate dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .slate dl div:nth-child(3) { border-left: 0; }
+    .slate dl div:nth-child(n+3) { border-top: 1px solid var(--rule); }
+    .slate p { min-height: 4.4em; }
+  }
+
+  .sheet { display: flex; gap: 3px; }
+  .sheet button { flex: 1 1 0; min-width: 0; padding: 7px 0; border: 1px solid var(--rule); border-radius: 3px; background: transparent;
+    color: var(--muted); font-family: var(--mono); font-size: 12px; cursor: pointer; }
+  .sheet button:hover { color: var(--paper); border-color: var(--muted); }
+  .sheet button.done { color: var(--paper); border-color: var(--muted); }
+  .sheet button[aria-current="true"] { background: var(--flag); border-color: var(--flag); color: var(--ink); }
+  input[type="range"] { width: 100%; margin: 0; accent-color: var(--flag); }
+
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { font-family: var(--mono); font-weight: 500; font-size: 14px; padding: 9px 16px; border: 0; border-radius: 2px;
+    background: var(--paper); color: var(--ink); box-shadow: 3px 4px 0 rgba(0,0,0,.45); cursor: pointer; }
+  .btn:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 rgba(0,0,0,.45); }
+  .btn.primary { background: var(--flag); min-width: 5.5em; }
+  fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; min-width: 0; }
+  legend { float: left; padding: 0; margin-right: 14px; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  fieldset label { font-family: var(--mono); font-size: 13px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  input[type="radio"] { accent-color: var(--flag); margin: 0; }
+  :focus-visible { outline: 2px solid var(--flag); outline-offset: 2px; }
+</style>
+
+<main class="wrap">
+  <header>
+    <h1>Building Car Seven</h1>
+    <p>A Formula 1 car laid out in pieces on a blueprint, then put together one assembly at a time in stop motion, in roughly the order a race team builds it.</p>
+  </header>
+
+  <div class="stage">
+    <canvas id="film" width="960" height="540" role="img" aria-label="Stop-motion film: fifteen paper cut-out assemblies of a Formula 1 car move in from an exploded layout and join into a complete car, which then drives away."></canvas>
+  </div>
+
+  <div class="slate">
+    <dl>
+      <div><dt>Step</dt><dd id="sc">Layout</dd></div>
+      <div><dt>Assembly</dt><dd id="scn">Exploded view</dd></div>
+      <div><dt>Frame</dt><dd id="fr">001 / 804</dd></div>
+      <div><dt>Shooting</dt><dd id="fpsl">12 fps</dd></div>
+    </dl>
+    <p id="note">Every assembly is on the sheet before the build starts.</p>
+  </div>
+
+  <div class="sheet" id="sheet" aria-label="Jump to a build step"></div>
+  <input type="range" id="scrub" min="0" max="803" value="0" step="1" aria-label="Scrub through the film">
+
+  <div class="controls">
+    <div class="btns">
+      <button class="btn primary" id="play" type="button">Pause</button>
+      <button class="btn" id="step" type="button">Next pose</button>
+      <button class="btn" id="restart" type="button">Restart</button>
+    </div>
+    <fieldset>
+      <legend>Hold each pose</legend>
+      <label><input type="radio" name="hold" id="hold3" value="3"> On threes · 8 fps</label>
+      <label><input type="radio" name="hold" id="hold2" value="2" checked> On twos · 12 fps</label>
+      <label><input type="radio" name="hold" id="hold1" value="1"> On ones · 24 fps</label>
+    </fieldset>
+  </div>
+</main>
+
+<script>
+(() => {
+  const W = 960, H = 540;
+  const GY = 372, RX = 215, FX = 683, WY = 325, WR = 47; // world units: 130 px = 1 m
+  const cv = document.getElementById('film');
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = W * dpr; cv.height = H * dpr;
+  const ctx = cv.getContext('2d');
+
+  const C = {
+    bench: '#0e1422', sheet: '#2a4a8f', paper: '#f1ecdf', ink: '#14171d',
+    carbon: '#23262c', carbon2: '#343842', steel: '#a9afb8', steel2: '#7d848f', iron: '#565c67',
+    ti: '#cfc8b4', gold: '#d9a441', copper: '#b98a5a', wood: '#8a6a45',
+    body: '#e8472b', body2: '#b93520', yellow: '#ffc93c', lamp: '#ff3b1f'
+  };
+  const DISPLAY = '"Bowlby One", Impact, "Arial Black", sans-serif';
+  const MONO = '"DM Mono", ui-monospace, Menlo, monospace';
+
+  /* ---------- stop-motion helpers ---------- */
+  let P = 0, LIFT = 1, WROT = 0;
+  const frac = x => x - Math.floor(x);
+  const hs = (a, b) => frac(Math.sin(a * 127.1 + b * 311.7) * 43758.5453);
+  const h = (a, b) => frac(Math.sin(a * 127.1 + b * 311.7 + P * 74.7) * 43758.5453);
+  const j = (id, amp = 1.4) => (h(id, 1) - .5) * 2 * amp;
+  const ease = t => t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);
+
+  function cut(id, x, y, fn, rot = 0, amp = 1.4) {
+    ctx.save();
+    ctx.translate(x + j(id, amp), y + j(id + .5, amp));
+    ctx.rotate(rot + j(id + .7, .006 * amp));
+    fn();
+    ctx.restore();
+  }
+  function shadowOn(lift) {
+    ctx.shadowColor = 'rgba(0,0,0,.34)';
+    ctx.shadowOffsetX = 3 * dpr * lift * LIFT; ctx.shadowOffsetY = 4 * dpr * lift * LIFT; ctx.shadowBlur = 2 * dpr * LIFT;
+  }
+  function fillP(col, lift = 1) { shadowOn(lift); ctx.fillStyle = col; ctx.fill(); ctx.shadowColor = 'transparent'; }
+  function strokeP(col, w, lift = 1) {
+    shadowOn(lift); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.stroke(); ctx.shadowColor = 'transparent';
+  }
+  const flat = col => { ctx.fillStyle = col; ctx.fill(); };
+  function line(col, w) { ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(); }
+  function poly(pts) { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); }
+  function path(pts) { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); }
+  function rect(x, y, w, hh) { ctx.beginPath(); ctx.rect(x, y, w, hh); }
+  function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+  function weave(pts) { // carbon-fibre twill hint, clipped to the part
+    ctx.save(); poly(pts); ctx.clip();
+    ctx.beginPath();
+    for (let x = -300; x < 1300; x += 7) { ctx.moveTo(x, 220); ctx.lineTo(x + 180, 400); }
+    line('rgba(255,255,255,.07)', 1);
+    ctx.restore();
+  }
+  function bolts(list, r = 1.8) { list.forEach(p => { circ(p[0], p[1], r); flat(C.steel); }); }
+  function strip(id, text, cx, y, size, col) {
+    ctx.font = `500 ${size}px ${MONO}`;
+    const w = ctx.measureText(text).width + 28;
+    cut(id, cx, y, () => {
+      rect(-w / 2, -size, w, size * 2); fillP(col);
+      ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(text, 0, 1);
+    }, (hs(id, 2) - .5) * .03, 1);
+  }
+
+  /* ---------- the car, drawn in its assembled position ---------- */
+  const FLOOR = [[716, 362], [704, 358], [250, 358], [150, 330], [150, 340], [222, 366], [704, 366]];
+  function dFloor() {
+    poly(FLOOR); fillP(C.carbon);
+    rect(262, 366, 430, 3); flat(C.wood);                       // skid plank
+    path([[250, 358], [704, 358]]); line('rgba(255,255,255,.18)', 1);
+    for (let i = 0; i < 4; i++) { path([[640 + i * 16, 359], [648 + i * 16, 365]]); line(C.iron, 2); } // floor-edge fences
+    for (let i = 0; i < 3; i++) { path([[160 + i * 18, 336 + i * 5], [176 + i * 18, 341 + i * 5]]); line(C.iron, 2); } // diffuser strakes
+  }
+  const TUB = [[430, 358], [430, 300], [452, 286], [500, 290], [520, 312], [600, 312], [640, 300], [700, 304], [716, 318], [716, 352], [704, 358]];
+  function dTub() {
+    poly(TUB); fillP(C.carbon2); weave(TUB);
+    path([[500, 290], [520, 312], [600, 312], [640, 300]]); line(C.steel2, 3);            // cockpit rim
+    ctx.setLineDash([5, 4]); rect(440, 312, 54, 38); line(C.gold, 1.5); ctx.setLineDash([]); // fuel cell bay
+    path([[700, 306], [700, 356]]); line('rgba(255,255,255,.2)', 1.5);                     // front bulkhead
+    rect(612, 322, 60, 6); flat(C.iron); rect(612, 334, 44, 6); flat(C.iron);              // side-impact structures
+    bolts([[436, 306], [436, 352], [708, 322], [708, 348], [560, 350], [600, 350]]);
+  }
+  function dPU() {
+    poly([[335, 358], [335, 318], [350, 300], [420, 296], [430, 300], [430, 358]]); fillP(C.steel2);
+    rect(350, 298, 72, 11); flat(C.iron);                                   // cam cover
+    for (let i = 0; i < 3; i++) { rect(356 + i * 23, 313, 17, 24); flat(C.steel); path([[360 + i * 23, 319], [369 + i * 23, 319]]); line(C.iron, 2); }
+    ctx.beginPath(); ctx.roundRect(356, 283, 62, 14, 6); fillP(C.carbon);   // plenum
+    circ(346, 332, 13); fillP(C.steel); circ(346, 332, 6); flat(C.carbon);  // turbocharger
+    rect(378, 341, 46, 14); flat(C.gold);                                   // hybrid motor, heat-shielded
+    path([[384, 348], [418, 348]]); line(C.body2, 2);
+    bolts([[340, 352], [426, 352], [426, 304], [352, 306]]);
+  }
+  const GBOX = [[232, 356], [232, 320], [335, 312], [335, 358]];
+  function dGearbox() {
+    poly([[150, 336], [232, 324], [232, 346], [150, 344]]); fillP(C.carbon);   // rear crash structure
+    poly(GBOX); fillP(C.carbon2); weave(GBOX);
+    for (let i = 0; i < 4; i++) { circ(254 + i * 21, 340, 8); line(C.steel2, 2); circ(254 + i * 21, 340, 2); flat(C.steel); }
+    rect(146, 333, 6, 12); flat(C.lamp);                                       // rain light
+    bolts([[238, 326], [238, 350], [329, 318], [329, 352]]);
+  }
+  function dExhaust() {
+    ctx.beginPath(); ctx.moveTo(352, 310); ctx.quadraticCurveTo(322, 290, 282, 296); ctx.lineTo(174, 302);
+    strokeP(C.copper, 9);
+    path([[250, 298], [182, 302]]); line('#7b6a8f', 9);                        // heat-blued tail
+    path([[176, 302], [172, 302]]); line(C.ink, 9);
+    path([[300, 291], [300, 300]]); line(C.steel, 2);
+  }
+  function dRads() {
+    poly([[448, 352], [470, 314], [480, 316], [458, 354]]); fillP(C.steel2);
+    poly([[470, 352], [498, 304], [512, 306], [484, 354]]); fillP(C.steel);
+    for (let i = 0; i < 7; i++) { path([[474 + i * 3.6, 346 - i * 6], [486 + i * 3.6, 348 - i * 6]]); line(C.iron, 1.5); }
+    path([[498, 304], [512, 306]]); line(C.gold, 3);
+  }
+  function dSuspR() {
+    path([[224, 328], [252, 331]]); strokeP(C.steel2, 6);                      // driveshaft
+    path([[222, 318], [292, 306]]); strokeP(C.carbon, 5);
+    path([[222, 340], [292, 350]]); strokeP(C.carbon, 5);
+    path([[224, 338], [282, 314]]); strokeP(C.steel, 3);                       // pushrod
+    poly([[207, 306], [224, 306], [226, 346], [205, 346]]); fillP(C.steel);    // upright
+    bolts([[215, 312], [215, 340], [290, 307], [290, 350]]);
+  }
+  function dSuspF() {
+    path([[676, 316], [604, 310]]); strokeP(C.carbon, 5);
+    path([[676, 342], [604, 350]]); strokeP(C.carbon, 5);
+    path([[674, 318], [622, 346]]); strokeP(C.steel, 3);                       // pullrod
+    path([[676, 329], [612, 331]]); strokeP(C.steel2, 2.5);                    // track rod
+    poly([[674, 306], [691, 306], [693, 346], [672, 346]]); fillP(C.steel);
+    bolts([[683, 312], [683, 340], [606, 311], [606, 350]]);
+  }
+  const brake = (cx, side) => () => {
+    circ(cx, WY, 22); fillP('#3b3e46');
+    for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; circ(cx + Math.cos(a) * 16, WY + Math.sin(a) * 16, 1.6); flat(C.ink); }
+    circ(cx, WY, 9); flat(C.steel); circ(cx, WY, 3); flat(C.iron);
+    ctx.beginPath(); ctx.arc(cx, WY, 19, side > 0 ? -.7 : Math.PI - .7, side > 0 ? .7 : Math.PI + .7);
+    strokeP(C.gold, 9, .5);                                                    // caliper
+  };
+  function dDriver() {
+    circ(538, 301, 12); fillP(C.paper);
+    poly([[541, 294], [551, 297], [551, 304], [541, 303]]); flat(C.ink);       // visor
+    ctx.beginPath(); ctx.arc(538, 301, 12, Math.PI * 1.05, Math.PI * 1.6); line(C.yellow, 3);
+  }
+  function dSidepod() {
+    poly([[360, 358], [354, 330], [372, 304], [470, 296], [548, 304], [566, 330], [560, 358]]); fillP(C.body);
+    poly([[359, 358], [356, 345], [563, 345], [560, 358]]); flat(C.body2);     // undercut
+    poly([[546, 306], [563, 330], [553, 332], [538, 310]]); flat(C.ink);       // cooling inlet
+    for (let i = 0; i < 6; i++) { path([[396 + i * 14, 318], [404 + i * 14, 306]]); line(C.body2, 3); } // louvres
+    path([[372, 336], [552, 336]]); line(C.paper, 2);
+  }
+  function dCover() {
+    poly([[226, 352], [232, 318], [250, 300], [330, 280], [418, 262], [452, 248], [470, 250], [458, 290], [444, 304], [380, 306], [352, 322], [360, 358], [300, 358]]);
+    fillP(C.body);
+    poly([[250, 300], [330, 280], [418, 262], [420, 268], [332, 287], [252, 306]]); flat(C.paper);   // stripe
+    poly([[452, 248], [470, 250], [466, 262], [452, 259]]); flat(C.ink);       // airbox intake
+    rect(444, 242, 16, 6); flat(C.ink);                                        // roll-hoop camera
+    path([[236, 340], [352, 340]]); line(C.body2, 2);
+    circ(300, 316, 15); fillP(C.paper, .4);
+    ctx.fillStyle = C.ink; ctx.font = `400 19px ${DISPLAY}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('7', 300, 317);
+  }
+  function dNose() {
+    poly([[800, 352], [813, 352], [811, 363], [798, 363]]); fillP(C.ink);      // wing pylon
+    poly([[716, 318], [716, 352], [770, 354], [838, 352], [842, 346], [800, 330], [745, 318]]); fillP(C.body);
+    poly([[812, 334], [842, 346], [838, 352], [806, 352]]); flat(C.paper);     // nose tip
+    path([[722, 346], [800, 348]]); line(C.body2, 2);
+    poly([[766, 362], [814, 362], [814, 368], [764, 368]]); fillP(C.carbon);   // mainplane
+    poly([[776, 353], [814, 350], [814, 356], [776, 359]]); fillP(C.paper);    // flaps
+    poly([[784, 345], [814, 341], [814, 346], [784, 350]]); fillP(C.carbon);
+    poly([[812, 338], [856, 350], [858, 370], [812, 370]]); fillP(C.body);     // endplate
+    path([[818, 364], [852, 364]]); line(C.ink, 2);
+  }
+  function dRearWing() {
+    ctx.beginPath(); ctx.moveTo(208, 318); ctx.quadraticCurveTo(204, 284, 186, 274); strokeP(C.carbon, 6);  // swan-neck pylon
+    poly([[150, 316], [198, 320], [198, 326], [150, 323]]); fillP(C.carbon);   // beam wing
+    poly([[112, 250], [202, 250], [200, 300], [176, 336], [150, 336], [120, 300]]); fillP(C.body);
+    poly([[122, 268], [190, 276], [188, 286], [122, 278]]); flat(C.ink);       // mainplane section
+    path([[126, 296], [194, 296]]); line(C.paper, 2);
+    path([[150, 330], [176, 330]]); line(C.body2, 2);
+  }
+  function dFlap() {
+    poly([[124, 254], [192, 258], [192, 266], [124, 262]]); fillP(C.paper);
+    path([[158, 258], [158, 264]]); line(C.ink, 2);                            // flap actuator
+  }
+  function dHalo() {
+    ctx.beginPath(); ctx.moveTo(606, 312); ctx.lineTo(594, 294); ctx.quadraticCurveTo(560, 276, 502, 285);
+    strokeP(C.ti, 7);
+    ctx.beginPath(); ctx.moveTo(593, 292); ctx.quadraticCurveTo(560, 275, 506, 283); line('rgba(255,255,255,.55)', 1.5);
+  }
+  const wheel = cx => () => {
+    circ(cx, WY, WR); fillP(C.ink, 1.3);
+    ctx.save(); ctx.translate(cx, WY); ctx.rotate(WROT);
+    ctx.setLineDash([22, 9]); circ(0, 0, 39); line(C.yellow, 3); ctx.setLineDash([]);   // compound marking
+    circ(0, 0, 30); flat('#2d3037'); circ(0, 0, 30); line(C.steel2, 2);                 // 18-inch rim and cover
+    for (let i = 0; i < 5; i++) { const a = i * Math.PI * .4; path([[Math.cos(a) * 8, Math.sin(a) * 8], [Math.cos(a) * 27, Math.sin(a) * 27]]); line(C.iron, 4); }
+    circ(0, 0, 6); flat(C.steel); circ(0, 0, 2.5); flat(C.body);
+    ctx.restore();
+  };
+
+  /* Build order. ex = where the piece lies in the exploded layout, c = pivot. z = paint order once fitted. */
+  const PARTS = [
+    { name: 'Floor and diffuser', note: 'The shaped underside. It is the biggest single source of downforce.', z: 0,
+      pieces: [{ c: [430, 360], ex: [0, 150], r: .02, d: dFloor }] },
+    { name: 'Survival cell', note: 'Carbon-fibre tub. The driver and the fuel cell sit inside it.', z: 4,
+      pieces: [{ c: [573, 322], ex: [30, -165], r: -.03, d: dTub }] },
+    { name: 'Power unit', note: '1.6-litre turbocharged V6 hybrid, bolted to the back of the tub.', z: 2,
+      pieces: [{ c: [382, 322], ex: [-40, -170], r: .05, d: dPU }] },
+    { name: 'Gearbox and crash structure', note: 'Eight forward gears and reverse. The casing carries the rear end.', z: 1,
+      pieces: [{ c: [245, 336], ex: [-75, -185], r: -.04, d: dGearbox }] },
+    { name: 'Exhaust', note: 'Thin-wall Inconel pipework that runs glowing hot.', z: 3,
+      pieces: [{ c: [262, 300], ex: [-60, -100], r: .03, d: dExhaust }] },
+    { name: 'Radiators', note: 'Coolers for water, oil and charge air, angled inside the sidepods.', z: 5,
+      pieces: [{ c: [480, 330], ex: [60, 100], r: .08, d: dRads }] },
+    { name: 'Suspension', note: 'Wishbones front and rear, with rods working the inboard springs.', z: 6,
+      pieces: [{ c: [250, 328], ex: [-150, 10], r: -.06, d: dSuspR }, { c: [645, 328], ex: [250, 0], r: .06, d: dSuspF }] },
+    { name: 'Brakes', note: 'Carbon discs and six-piston calipers. Discs can pass 1,000 °C.', z: 7,
+      pieces: [{ c: [RX, WY], ex: [-200, 60], r: 1.2, d: brake(RX, -1) }, { c: [FX, WY], ex: [300, 60], r: -1.2, d: brake(FX, 1) }] },
+    { name: 'Sidepods', note: 'Bodywork that feeds the radiators and steers air to the rear.', z: 9,
+      pieces: [{ c: [460, 328], ex: [-10, 235], r: -.03, d: dSidepod }] },
+    { name: 'Engine cover and airbox', note: "The intake above the driver's head feeds the engine.", z: 10,
+      pieces: [{ c: [348, 304], ex: [-250, 235], r: .04, d: dCover }] },
+    { name: 'Nose and front wing', note: 'The nose is a crash structure. The wing sets up the airflow.', z: 11,
+      pieces: [{ c: [786, 344], ex: [170, -150], r: -.05, d: dNose }] },
+    { name: 'Rear wing', note: 'Mainplane, movable upper flap and a beam wing below.', z: 12,
+      pieces: [{ c: [158, 294], ex: [-190, -110], r: .04, d: dRearWing }, { c: [158, 260], ex: [-190, -152], r: -.1, d: dFlap }] },
+    { name: 'Halo', note: "Titanium hoop of about 7 kg that shields the driver's head.", z: 13,
+      pieces: [{ c: [554, 296], ex: [330, 190], r: .06, d: dHalo }] },
+    { name: 'Wheels and tyres', note: '18-inch rims with wheel covers. One central nut each.', z: 14,
+      pieces: [{ c: [RX, WY], ex: [-110, 95], r: -.9, d: wheel(RX) }, { c: [FX, WY], ex: [70, 95], r: .9, d: wheel(FX) }] },
+    { name: 'Driver', note: "Last part in. The seat is moulded to the driver's body.", z: 8,
+      pieces: [{ c: [538, 301], ex: [420, 250], r: .5, d: dDriver }] }
+  ];
+  const N = PARTS.length, INTRO = 48, STEP = 42, MOVE = 30, OUTRO = 126;
+  const TOTAL = INTRO + N * STEP + OUTRO;
+  const ORDER = PARTS.map((p, i) => i).sort((a, b) => PARTS[a].z - PARTS[b].z);
+
+  const vig = ctx.createRadialGradient(W / 2, H / 2, 260, W / 2, H / 2, 640);
+  vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(0,0,0,.45)');
+
+  function sheet() {
+    ctx.fillStyle = C.bench; ctx.fillRect(0, 0, W, H);
+    cut(900, 0, 0, () => {
+      rect(22, 18, W - 44, H - 36); fillP(C.sheet, 1.6);
+      ctx.beginPath();
+      for (let x = 62; x < W - 22; x += 40) { ctx.moveTo(x + .5, 18); ctx.lineTo(x + .5, H - 18); }
+      for (let y = 58; y < H - 18; y += 40) { ctx.moveTo(22, y + .5); ctx.lineTo(W - 22, y + .5); }
+      line('rgba(255,255,255,.07)', 1);
+      ctx.fillStyle = 'rgba(241,236,223,.55)'; ctx.font = `400 11px ${MONO}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText('DRG 007  ·  SIDE ELEVATION  ·  130 PX = 1 M', 40, H - 34);
+    }, 0, .6);
+  }
+  function dim(x0, x1, y, text) {
+    path([[x0, y], [x1, y]]); line('rgba(241,236,223,.8)', 1.5);
+    path([[x0, y - 7], [x0, y + 7]]); line('rgba(241,236,223,.8)', 1.5);
+    path([[x1, y - 7], [x1, y + 7]]); line('rgba(241,236,223,.8)', 1.5);
+    ctx.font = `500 13px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(text).width + 14;
+    ctx.fillStyle = C.sheet; ctx.fillRect((x0 + x1) / 2 - w / 2, y - 9, w, 18);
+    ctx.fillStyle = C.paper; ctx.fillText(text, (x0 + x1) / 2, y + 1);
+  }
+
+  /* ---------- one exposure ---------- */
+  const $ = id => document.getElementById(id);
+  const ui = { sc: $('sc'), scn: $('scn'), fr: $('fr'), fpsl: $('fpsl'), note: $('note'), scrub: $('scrub'), play: $('play'), sheet: $('sheet') };
+
+  function draw(pose) {
+    P = pose;
+    const k = pose < INTRO ? -1 : Math.floor((pose - INTRO) / STEP);   // step being shot
+    const out = k >= N, o = out ? pose - INTRO - N * STEP : 0;
+    const zoom = .78 + .22 * ease(o / 40);
+    const roll = o > 66 ? (o - 66) * (o - 66) * .55 : 0;
+    WROT = roll / WR;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    sheet();
+    ctx.save();
+    ctx.translate(480, 285); ctx.scale(zoom, zoom); ctx.translate(-478, -325);
+
+    ctx.setLineDash([10, 8]); path([[-200, GY + .5], [1200, GY + .5]]); line('rgba(241,236,223,.35)', 1.5); ctx.setLineDash([]);
+    if (!out) [300, 600].forEach((x, i) => cut(880 + i, x, 0, () => { poly([[0, GY], [6, 366], [44, 366], [50, GY]]); fillP(C.iron, .5); }, 0, .4));
+
+    const tOf = i => ease((pose - (INTRO + i * STEP)) / MOVE);
+    const list = ORDER.filter(i => i !== k || tOf(i) >= 1);
+    if (k >= 0 && !out && tOf(k) < 1) list.push(k);                    // the part in hand stays on top
+    list.forEach(i => {
+      const part = PARTS[i], t = tOf(i), moving = i === k && t < 1;
+      const local = pose - (INTRO + i * STEP);
+      const pop = i === k && local >= MOVE && local < MOVE + 4 ? 1.05 : 1;
+      part.pieces.forEach((q, n) => {
+        const ox = q.ex[0] * (1 - t), oy = q.ex[1] * (1 - t);
+        if (moving) {
+          ctx.setLineDash([4, 6]); path([[q.c[0] + ox, q.c[1] + oy], q.c]); line('rgba(241,236,223,.6)', 1.5); ctx.setLineDash([]);
+        }
+        LIFT = 1 + 1.6 * (1 - t);
+        cut(i * 10 + n, ox + roll, oy, () => {
+          ctx.translate(q.c[0], q.c[1]); ctx.rotate(q.r * (1 - t)); ctx.scale(pop, pop); ctx.translate(-q.c[0], -q.c[1]);
+          q.d();
+        }, 0, moving ? 1.7 : t >= 1 ? .45 : .9);
+      });
+    });
+    LIFT = 1;
+    if (out && o >= 24 && o < 66) {
+      dim(RX, FX, 398, 'WHEELBASE 3.60 M');
+      dim(112, 858, 222, 'LENGTH 5.74 M');
+    }
+    ctx.restore();
+
+    let step, name, note;
+    if (k < 0) { step = 'Layout'; name = 'Exploded view'; note = 'Every assembly is on the sheet before the build starts.'; }
+    else if (out) { step = 'Roll-out'; name = 'Complete car'; note = 'Fifteen assemblies fitted. Off the stands and out of the garage.'; }
+    else { step = `${String(k + 1).padStart(2, '0')} of ${N}`; name = PARTS[k].name; note = PARTS[k].note; }
+    strip(950, (k >= 0 && !out ? `${String(k + 1).padStart(2, '0')} / ${N}  ·  ` : '') + name.toUpperCase(), W / 2, 50, 17, C.yellow);
+    strip(960, note, W / 2, 88, 13, C.paper);
+
+    ctx.fillStyle = `rgba(255,232,190,${(h(1, 9) * .05).toFixed(3)})`; ctx.fillRect(0, 0, W, H);   // lamp flicker
+    ctx.fillStyle = vig; ctx.fillRect(0, 0, W, H);
+
+    ui.sc.textContent = step; ui.scn.textContent = name; ui.note.textContent = note;
+    ui.fr.textContent = `${String(pose + 1).padStart(3, '0')} / ${TOTAL}`;
+    ui.scrub.value = pose;
+    jumps.forEach((b, i) => {
+      b.setAttribute('aria-current', i === k ? 'true' : 'false');
+      b.classList.toggle('done', i < k);
+    });
+  }
+
+  /* ---------- playback ---------- */
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let tick = still ? INTRO + N * STEP + 48 : 0, hold = 2, playing = !still, acc = 0, last = performance.now(), shown = -1, dirty = true;
+
+  const jumps = PARTS.map((p, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = i + 1; b.title = p.name;
+    b.setAttribute('aria-label', `Step ${i + 1}: ${p.name}`);
+    b.addEventListener('click', () => { tick = INTRO + i * STEP; acc = 0; dirty = true; });
+    ui.sheet.appendChild(b);
+    return b;
+  });
+
+  function loop(now) {
+    if (playing) {
+      acc = Math.min(acc + now - last, 250);
+      while (acc >= 1000 / 24) { acc -= 1000 / 24; tick = (tick + 1) % TOTAL; }
+    }
+    last = now;
+    const pose = Math.floor(tick / hold) * hold;
+    if (pose !== shown || dirty) { draw(pose); shown = pose; dirty = false; }
+    requestAnimationFrame(loop);
+  }
+  function setPlaying(v) { playing = v; acc = 0; ui.play.textContent = v ? 'Pause' : 'Play'; }
+  setPlaying(playing);
+
+  ui.play.addEventListener('click', () => setPlaying(!playing));
+  $('step').addEventListener('click', () => { setPlaying(false); tick = (Math.floor(tick / hold) * hold + hold) % TOTAL; });
+  $('restart').addEventListener('click', () => { tick = 0; setPlaying(true); });
+  ui.scrub.addEventListener('input', () => { tick = +ui.scrub.value; acc = 0; dirty = true; });
+  document.querySelectorAll('input[name="hold"]').forEach(r => r.addEventListener('change', () => {
+    hold = +r.value; ui.fpsl.textContent = `${24 / hold} fps`; dirty = true;
+  }));
+
+  if (document.fonts) {
+    document.fonts.load(`19px ${DISPLAY}`); document.fonts.load(`500 16px ${MONO}`);
+    document.fonts.ready.then(() => { dirty = true; });
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+
+</body></html>

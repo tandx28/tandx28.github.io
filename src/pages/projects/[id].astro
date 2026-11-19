@@ -1,0 +1,207 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('projects'))
+    .filter((p) => p.data.tier === 'featured')
+    .sort((a, b) => a.data.order - b.data.order);
+  return all.map((p, i) => ({ params: { id: p.id }, props: { p, next: all[(i + 1) % all.length] } }));
+}
+
+const { p, next } = Astro.props;
+const { Content } = await render(p);
+const d = p.data;
+---
+
+<Base title={`${d.title} · Tan De Xun`} description={d.tagline}>
+  <article style={`--acc:${d.accent}`}>
+    <header class="container head">
+      <a href="/#work" class="back mono">← cd ..</a>
+      <p class="meta mono" data-reveal>{d.year}{d.role ? ` · ${d.role}` : ''}</p>
+      <h1 transition:name={`title-${p.id}`}>{d.title}</h1>
+      <p class="tag" data-reveal style="--i:1">{d.tagline}</p>
+      <div class="ctas" data-reveal style="--i:2">
+        {d.live && <a class="btn primary" href={d.live} target="_blank" rel="noopener" data-magnetic>Open live <span class="arrow">↗</span></a>}
+        {d.repo && <a class="btn" href={d.repo} target="_blank" rel="noopener" data-magnetic>Source code <span class="arrow">↗</span></a>}
+        {!d.live && !d.repo && <span class="chip">{d.status === 'private' ? 'code is private' : 'not public yet'}</span>}
+      </div>
+      {d.stats.length > 0 && (
+        <ul class="stats">
+          {d.stats.map((s, i) => (
+            <li data-reveal style={`--i:${i}`}><span class="v">{s.value}</span><span class="l">{s.label}</span></li>
+          ))}
+        </ul>
+      )}
+    </header>
+    {d.cover && (
+      <div class="container" data-reveal>
+        <a class="shot" href={d.live} target="_blank" rel="noopener"><img src={d.cover} alt={`Screenshot of ${d.title}`} width="1280" height="800" /></a>
+      </div>
+    )}
+    <div class="container body">
+      <aside data-reveal>
+        <p class="mono k">stack</p>
+        <ul>{d.stack.map((s) => <li class="chip">{s}</li>)}</ul>
+        <p class="mono k">status</p>
+        <p class="v2">{d.status}</p>
+      </aside>
+      <div class="prose" data-reveal style="--i:1"><Content /></div>
+    </div>
+    <nav class="container next">
+      <a href={`/projects/${next.id}/`} data-spotlight>
+        <span class="mono">next project →</span>
+        <strong>{next.data.title}</strong>
+      </a>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .head {
+    padding-top: 140px;
+    padding-bottom: 40px;
+  }
+  .back {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 40px;
+    transition: color 0.2s, transform 0.3s var(--ease);
+  }
+  .back:hover {
+    color: var(--acc);
+    transform: translateX(-4px);
+  }
+  .meta {
+    color: var(--acc);
+    font-size: 13px;
+    margin: 0 0 12px;
+  }
+  h1 {
+    font-size: clamp(48px, 9vw, 110px);
+    letter-spacing: -0.055em;
+    line-height: 0.95;
+    margin: 0 0 24px;
+  }
+  .tag {
+    font-size: clamp(19px, 2vw, 24px);
+    color: var(--muted);
+    max-width: 50ch;
+    margin: 0 0 32px;
+  }
+  .ctas {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .stats {
+    list-style: none;
+    padding: 0;
+    margin: 56px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    border-top: 1px solid var(--line);
+  }
+  .stats li {
+    padding: 24px 20px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .v {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 650;
+    letter-spacing: -0.04em;
+    color: var(--acc);
+  }
+  .l {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .shot {
+    display: block;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    box-shadow: var(--shadow);
+    margin-top: 20px;
+  }
+  .shot img {
+    width: 100%;
+    height: auto;
+    transition: transform 1.2s var(--ease);
+  }
+  .shot:hover img {
+    transform: scale(1.02);
+  }
+  .body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 56px;
+    padding-top: 40px;
+    padding-bottom: 80px;
+  }
+  aside {
+    position: sticky;
+    top: 100px;
+    align-self: start;
+  }
+  aside ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .k {
+    font-size: 12px;
+    color: var(--faint);
+    margin: 0 0 10px;
+  }
+  .v2 {
+    margin: 0;
+    text-transform: capitalize;
+  }
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .next {
+    padding-bottom: 100px;
+  }
+  .next a {
+    --mx: 50%;
+    --my: 50%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 32px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: radial-gradient(400px circle at var(--mx) var(--my), var(--glow), transparent 60%), var(--surface);
+    transition: border-color 0.3s;
+  }
+  .next a:hover {
+    border-color: var(--acc);
+  }
+  .next span {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .next strong {
+    font-size: clamp(24px, 3vw, 36px);
+    letter-spacing: -0.03em;
+  }
+  @media (max-width: 800px) {
+    .body {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    aside {
+      position: static;
+    }
+  }
+</style>

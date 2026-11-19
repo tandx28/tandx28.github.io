@@ -1,0 +1,35 @@
+---
+import { profile } from '../data/profile';
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="container row">
+    <p class="mono">© {year} {profile.name}. Built with Astro, deployed by GitHub Actions.</p>
+    <p class="mono hint">press <kbd>⌘K</kbd> or <kbd>/</kbd> anywhere</p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 28px 0 36px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--faint);
+  }
+  kbd {
+    padding: 1px 6px;
+    border: 1px solid var(--line-strong);
+    border-radius: 5px;
+    color: var(--muted);
+  }
+</style>

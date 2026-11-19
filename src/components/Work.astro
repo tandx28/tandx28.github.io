@@ -1,0 +1,280 @@
+---
+import { getCollection } from 'astro:content';
+import CardArt from './CardArt.astro';
+
+const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const featured = all.filter((p) => p.data.tier === 'featured');
+const small = all.filter((p) => p.data.tier === 'small');
+const statusLabel = { live: 'live', 'in progress': 'building', private: 'private code' } as const;
+---
+
+<section id="work">
+  <div class="container">
+    <p class="eyebrow" data-reveal>02 / selected work</p>
+    <h2 class="h2" data-reveal data-scramble-on-view>Things I've <span class="grad">built and shipped.</span></h2>
+    <p class="lede" data-reveal style="--i:1">Open any card for the story behind it, or jump straight into the live ones.</p>
+
+    <div class="cards">
+      {featured.map((p, i) => (
+        <article class={`card ${i === 0 ? 'wide' : ''}`} data-reveal data-spotlight data-tilt style={`--i:${i % 2};--acc:${p.data.accent}`}>
+          <a class="cover" href={`/projects/${p.id}/`} aria-label={`Read about ${p.data.title}`}></a>
+          <div class="top mono">
+            <span class="idx">0{i + 1}</span>
+            <span class={`badge s-${p.data.status.replace(' ', '-')}`}><i></i>{statusLabel[p.data.status]}</span>
+          </div>
+          <div class="art" aria-hidden="true">
+            <CardArt id={p.id} title={p.data.title} cover={p.data.cover} />
+          </div>
+          <div class="txt">
+            <p class="meta mono">{p.data.year}{p.data.role ? ` · ${p.data.role}` : ''}</p>
+            <h3 transition:name={`title-${p.id}`}>{p.data.title}</h3>
+            <p class="tag">{p.data.tagline}</p>
+            <ul class="stack">
+              {p.data.stack.slice(0, 5).map((s) => <li class="chip">{s}</li>)}
+            </ul>
+            <div class="links mono">
+              <span class="read">case study →</span>
+              {p.data.live && <a href={p.data.live} target="_blank" rel="noopener" class="ext">live ↗</a>}
+              {p.data.repo && <a href={p.data.repo} target="_blank" rel="noopener" class="ext">code ↗</a>}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <h3 class="more mono" data-reveal>// also built</h3>
+    <ul class="rows">
+      {small.map((p, i) => (
+        <li data-reveal style={`--i:${i};--acc:${p.data.accent}`}>
+          <span class="y mono">{p.data.year}</span>
+          <span class="t">{p.data.title}</span>
+          <span class="d">{p.data.tagline}</span>
+          <span class="s mono">{p.data.stack.slice(0, 3).join(' · ')}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cards {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .card {
+    --mx: 50%;
+    --my: 50%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    overflow: hidden;
+    isolation: isolate;
+    transform-style: preserve-3d;
+    transition: transform 0.6s var(--ease), border-color 0.3s;
+  }
+  /* Light that follows the cursor, on the fill and on the border. */
+  .card::before,
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .card::before {
+    z-index: -1;
+    background: radial-gradient(500px circle at var(--mx) var(--my), color-mix(in srgb, var(--acc) 14%, transparent), transparent 45%);
+  }
+  .card::after {
+    padding: 1px;
+    background: radial-gradient(300px circle at var(--mx) var(--my), var(--acc), transparent 60%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  .card:hover::before,
+  .card:hover::after {
+    opacity: 1;
+  }
+  .cover {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .links a {
+    position: relative;
+    z-index: 2;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 22px 0;
+    font-size: 12px;
+    color: var(--faint);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .badge i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--faint);
+  }
+  .s-live i {
+    background: var(--ok);
+    box-shadow: 0 0 10px var(--ok);
+  }
+  .s-in-progress i {
+    background: var(--warn);
+  }
+  .art {
+    position: relative;
+    height: 190px;
+    margin: 18px 22px 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(circle at 30% 120%, color-mix(in srgb, var(--acc) 45%, transparent), transparent 60%),
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 32px),
+      repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 32px),
+      var(--bg-2);
+    transform: translateZ(30px);
+  }
+  .wide {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .wide .top {
+    width: 100%;
+  }
+  .wide .art {
+    flex: 1 1 340px;
+    height: auto;
+    min-height: 240px;
+    margin-bottom: 22px;
+  }
+  .wide .txt {
+    flex: 1 1 340px;
+  }
+  .txt {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .meta {
+    margin: 0 0 8px;
+    font-size: 12px;
+    color: var(--faint);
+  }
+  h3 {
+    margin: 0 0 10px;
+    font-size: clamp(24px, 2.6vw, 32px);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .tag {
+    margin: 0 0 18px;
+    color: var(--muted);
+  }
+  .stack {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .links {
+    margin-top: auto;
+    display: flex;
+    gap: 18px;
+    font-size: 13px;
+  }
+  .read {
+    color: var(--acc);
+  }
+  .ext {
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .ext:hover {
+    color: var(--text);
+  }
+
+  .more {
+    margin: 80px 0 10px;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--faint);
+  }
+  .rows {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .rows li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 110px 240px 1fr auto;
+    gap: 20px;
+    align-items: baseline;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .rows li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 1px;
+    width: 100%;
+    background: var(--acc);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s var(--ease);
+  }
+  .rows li:hover::before {
+    transform: scaleX(1);
+  }
+  .y,
+  .s {
+    font-size: 12px;
+    color: var(--faint);
+  }
+  .t {
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+  }
+  .d {
+    color: var(--muted);
+    font-size: 15px;
+  }
+  @media (max-width: 860px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+    .rows li {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+</style>

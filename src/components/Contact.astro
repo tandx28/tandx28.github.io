@@ -1,0 +1,90 @@
+---
+import { profile } from '../data/profile';
+---
+
+<section id="contact">
+  <div class="container">
+    <div class="box" data-reveal data-spotlight>
+      <p class="eyebrow">06 / contact</p>
+      <h2 class="big" data-scramble-on-view>Let's build <span class="grad">something good.</span></h2>
+      <p class="lede">
+        Hiring for Summer 2027, running a scholarship panel, or have an idea worth building? My inbox is open.
+      </p>
+      <button class="mail mono" data-copy-email data-email={profile.email} data-magnetic>
+        <span class="addr">{profile.email}</span>
+        <span class="copy">click to copy</span>
+      </button>
+      <div class="links">
+        <a class="btn" href={`mailto:${profile.email}`} data-magnetic>Email <span class="arrow">→</span></a>
+        <a class="btn" href={profile.linkedin} target="_blank" rel="noopener" data-magnetic>LinkedIn <span class="arrow">↗</span></a>
+        <a class="btn" href={profile.github} target="_blank" rel="noopener" data-magnetic>GitHub <span class="arrow">↗</span></a>
+        <a class="btn" href={profile.resume} target="_blank" rel="noopener" data-magnetic>Résumé <span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .box {
+    --mx: 50%;
+    --my: 50%;
+    position: relative;
+    padding: clamp(32px, 7vw, 80px);
+    border-radius: 28px;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(600px circle at var(--mx) var(--my), var(--glow), transparent 55%),
+      var(--surface);
+    overflow: hidden;
+    text-align: center;
+  }
+  .eyebrow {
+    justify-content: center;
+  }
+  .big {
+    font-size: clamp(40px, 7.5vw, 92px);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    margin: 0 auto 22px;
+    max-width: 14ch;
+  }
+  .lede {
+    margin: 0 auto 36px;
+  }
+  .mail {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 18px 28px;
+    border-radius: 16px;
+    border: 1px dashed var(--line-strong);
+    background: var(--bg-2);
+    color: var(--text);
+    cursor: pointer;
+    font-size: clamp(16px, 2.6vw, 24px);
+    max-width: 100%;
+    transition: border-color 0.3s;
+  }
+  .mail:hover {
+    border-color: var(--accent);
+  }
+  .addr {
+    overflow-wrap: anywhere;
+  }
+  .copy {
+    font-size: 12px;
+    color: var(--faint);
+  }
+  .mail.done .copy {
+    color: var(--ok);
+  }
+  .links {
+    margin-top: 32px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+</style>

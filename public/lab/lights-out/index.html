@@ -1,0 +1,468 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lights Out</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;600&display=swap">
+<style>
+  /* Layout: one animation stand. The film sits centre, the slate and dope sheet hang under it like set paperwork. */
+  :root {
+    color-scheme: dark;
+    --bench: #121a19;      /* workbench around the set */
+    --mat: #1f302e;        /* cutting mat */
+    --paper: #f1ecdf;      /* white card */
+    --ink: #17191d;        /* black card */
+    --muted: #9fb0aa;      /* pencil notes */
+    --flag: #ffc93c;       /* marker yellow */
+    --rule: #33504b;
+    --display: "Bowlby One", Impact, "Arial Black", sans-serif;
+    --body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bench);
+    color: var(--paper);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.5;
+    padding-block: 28px 40px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; }
+  h1 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 6vw, 46px); line-height: 1; margin: 0; letter-spacing: .01em; color: var(--flag); }
+  header p { margin: 0; color: var(--muted); max-width: 56ch; flex: 1 1 280px; min-width: 0; }
+
+  .stage { background: var(--mat); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+  canvas { display: block; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; height: auto; }
+
+  .slate { border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: var(--ink); }
+  .slate::before { content: ""; display: block; height: 12px;
+    background: repeating-linear-gradient(115deg, var(--paper) 0 18px, var(--ink) 18px 36px); }
+  .slate dl { margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .slate div { padding: 10px 14px; border-left: 1px solid var(--rule); min-width: 0; }
+  .slate div:first-child { border-left: 0; }
+  .slate dt { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .slate dd { margin: 2px 0 0; font-family: var(--mono); font-weight: 500; font-size: 17px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  @media (max-width: 560px) {
+    .slate dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .slate div:nth-child(3) { border-left: 0; }
+    .slate div:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  }
+
+  .sheet { display: flex; gap: 4px; }
+  .sheet button { min-width: 0; padding: 8px 0; border: 1px solid var(--rule); border-radius: 3px; background: transparent;
+    color: var(--muted); font-family: var(--mono); font-size: 13px; cursor: pointer; }
+  .sheet button:hover { color: var(--paper); border-color: var(--muted); }
+  .sheet button[aria-current="true"] { background: var(--flag); border-color: var(--flag); color: var(--ink); }
+  input[type="range"] { width: 100%; margin: 0; accent-color: var(--flag); }
+
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { font-family: var(--mono); font-weight: 500; font-size: 14px; padding: 9px 16px; border: 0; border-radius: 2px;
+    background: var(--paper); color: var(--ink); box-shadow: 3px 4px 0 rgba(0,0,0,.45); cursor: pointer; }
+  .btn:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 rgba(0,0,0,.45); }
+  .btn.primary { background: var(--flag); min-width: 5.5em; }
+  fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; min-width: 0; }
+  legend { float: left; padding: 0; margin-right: 14px; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  fieldset label { font-family: var(--mono); font-size: 13px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  input[type="radio"] { accent-color: var(--flag); margin: 0; }
+  :focus-visible { outline: 2px solid var(--flag); outline-offset: 2px; }
+</style>
+
+<main class="wrap">
+  <header>
+    <h1>Lights Out</h1>
+    <p>A cut-paper grand prix in five scenes. Each pose is held, nudged a hair and reshot, so the card boils and the cars jump the way they do on a real animation stand.</p>
+  </header>
+
+  <div class="stage">
+    <canvas id="film" width="960" height="540" role="img" aria-label="Stop-motion film of paper cut-out racing cars: title card, start lights, an overtake, a pit stop and the chequered flag."></canvas>
+  </div>
+
+  <div class="slate">
+    <dl>
+      <div><dt>Scene</dt><dd id="sc">1 of 5</dd></div>
+      <div><dt>Shot</dt><dd id="scn">Title card</dd></div>
+      <div><dt>Frame</dt><dd id="fr">001 / 624</dd></div>
+      <div><dt>Shooting</dt><dd id="fpsl">12 fps</dd></div>
+    </dl>
+  </div>
+
+  <div class="sheet" id="sheet" aria-label="Jump to scene"></div>
+  <input type="range" id="scrub" min="0" max="623" value="0" step="1" aria-label="Scrub through the film">
+
+  <div class="controls">
+    <div class="btns">
+      <button class="btn primary" id="play" type="button">Pause</button>
+      <button class="btn" id="step" type="button">Next pose</button>
+      <button class="btn" id="restart" type="button">Restart</button>
+    </div>
+    <fieldset>
+      <legend>Hold each pose</legend>
+      <label><input type="radio" name="hold" id="hold3" value="3"> On threes · 8 fps</label>
+      <label><input type="radio" name="hold" id="hold2" value="2" checked> On twos · 12 fps</label>
+      <label><input type="radio" name="hold" id="hold1" value="1"> On ones · 24 fps</label>
+    </fieldset>
+  </div>
+</main>
+
+<script>
+(() => {
+  const W = 960, H = 540, GY = 436;
+  const cv = document.getElementById('film');
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = W * dpr; cv.height = H * dpr;
+  const ctx = cv.getContext('2d');
+
+  const C = {
+    mat: '#1f302e', matLine: '#2c4541', paper: '#f1ecdf', ink: '#17191d', grey: '#8d939c',
+    tar: '#3b3e46', grass: '#4f9a5b', green2: '#3c7d54', navy: '#27375e', brown: '#7a5234',
+    red: '#e8472b', yellow: '#ffc93c', teal: '#2bb3a3', pink: '#f26d9b', blue: '#3d6fd9',
+    skyA: '#8fc7e8', skyB: '#f4c25e', skyC: '#c9d4d8', skyD: '#7fd0c4', title: '#27375e'
+  };
+  const PARTY = [C.red, C.yellow, C.teal, C.pink, C.paper, C.blue];
+  const DISPLAY = '"Bowlby One", Impact, "Arial Black", sans-serif';
+  const MONO = '"DM Mono", ui-monospace, Menlo, monospace';
+
+  /* ---------- stop-motion helpers ---------- */
+  let P = 0; // pose being shot; reseeds every wobble
+  const frac = x => x - Math.floor(x);
+  const hs = (a, b) => frac(Math.sin(a * 127.1 + b * 311.7) * 43758.5453);          // fixed per piece
+  const h = (a, b) => frac(Math.sin(a * 127.1 + b * 311.7 + P * 74.7) * 43758.5453); // changes per pose
+  const j = (id, amp = 1.4) => (h(id, 1) - .5) * 2 * amp;
+  const ease = t => t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);
+
+  function cut(id, x, y, fn, rot = 0, amp = 1.4) {
+    ctx.save();
+    ctx.translate(x + j(id, amp), y + j(id + .5, amp));
+    ctx.rotate(rot + j(id + .7, .012));
+    fn();
+    ctx.restore();
+  }
+  function fillP(col, lift = 1) {
+    ctx.shadowColor = 'rgba(0,0,0,.32)';
+    ctx.shadowOffsetX = 3 * dpr * lift; ctx.shadowOffsetY = 4 * dpr * lift; ctx.shadowBlur = 2 * dpr;
+    ctx.fillStyle = col; ctx.fill();
+    ctx.shadowColor = 'transparent';
+  }
+  const flat = col => { ctx.fillStyle = col; ctx.fill(); };
+  function poly(pts) { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); }
+  function rect(x, y, w, hh) { ctx.beginPath(); ctx.rect(x, y, w, hh); }
+  function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+  function rep(period, speed, s, fn) {
+    const off = s * speed;
+    let k = Math.floor(off / period) - 1;
+    for (let x = -(off % period) - period; x < W + period; x += period, k++) fn(x, k);
+  }
+
+  /* ---------- set pieces ---------- */
+  function set(sky) {
+    ctx.fillStyle = C.mat; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = C.matLine; ctx.lineWidth = 1; ctx.beginPath();
+    for (let x = 20; x < W; x += 40) { ctx.moveTo(x + .5, 0); ctx.lineTo(x + .5, H); }
+    for (let y = 30; y < H; y += 40) { ctx.moveTo(0, y + .5); ctx.lineTo(W, y + .5); }
+    ctx.stroke();
+    cut(900, 0, 0, () => { rect(26, 22, W - 52, H - 44); fillP(sky, 1.6); }, 0, .6);
+  }
+  function clipSet() { ctx.save(); rect(26, 22, W - 52, H - 44); ctx.clip(); }
+  function ground(s) {
+    rect(0, 392, W, 98); flat(C.tar);
+    rect(0, 490, W, 60); flat(C.grass);
+    for (let x = -(s % 96) - 96; x < W; x += 96) {
+      rect(x, 380, 48, 12); flat(C.red);
+      rect(x + 48, 380, 48, 12); flat(C.paper);
+    }
+  }
+  function crowd(x, y, w, rows, bounce) {
+    for (let r = 0; r < rows; r++) for (let c = 0; c * 18 < w; c++) {
+      const up = h(c + 40, r + 3) > .65 ? -bounce : 0;
+      circ(x + c * 18 + (r % 2) * 9, y + r * 16 + up, 6);
+      flat(PARTY[Math.floor(hs(c, r + 11) * PARTY.length)]);
+    }
+  }
+  function strip(id, text, cx, y, size = 16, col = C.paper) {
+    ctx.font = `500 ${size}px ${MONO}`;
+    const w = ctx.measureText(text).width + 28;
+    cut(id, cx, y, () => {
+      rect(-w / 2, -size, w, size * 2); fillP(col);
+      ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(text, 0, 1);
+    }, (hs(id, 2) - .5) * .06);
+  }
+  function tiles(id, text, cx, y, size, shown, popAt) {
+    const tw = size * .86, gap = size * .1, n = text.length;
+    const x0 = cx - (n * tw + (n - 1) * gap) / 2 + tw / 2;
+    for (let i = 0; i < n && i < shown; i++) {
+      if (text[i] === ' ') continue;
+      const pop = i === shown - 1 && popAt ? 1.16 : 1;
+      cut(id + i, x0 + i * (tw + gap), y, () => {
+        ctx.scale(pop, pop);
+        rect(-tw / 2, -size * .6, tw, size * 1.2); fillP(PARTY[(i + id) % 5], 1.4);
+        ctx.fillStyle = C.ink; ctx.font = `400 ${size}px ${DISPLAY}`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(text[i], 0, size * .05);
+      }, (hs(id, i) - .5) * .14);
+    }
+  }
+  function wheel(id, x, y, rot, stripe, r) {
+    cut(id, x, y, () => {
+      circ(0, 0, r); fillP(C.ink);
+      ctx.rotate(rot);
+      ctx.lineWidth = r * .14; ctx.strokeStyle = stripe;
+      ctx.setLineDash([r * .62, r * .38]); circ(0, 0, r * .72); ctx.stroke(); ctx.setLineDash([]);
+      circ(0, 0, r * .32); flat(C.grey);
+    }, 0, 1);
+  }
+  const BODY = [[-105, -30], [-95, -48], [-40, -52], [-20, -66], [10, -66], [30, -50], [90, -36], [118, -22], [118, -14], [-105, -14]];
+  function car(id, x, y, o) {
+    const s = o.sc || 1;
+    ctx.fillStyle = 'rgba(0,0,0,.22)'; ctx.beginPath(); ctx.ellipse(x + 6, y + 3, 128 * s, 7 * s, 0, 0, Math.PI * 2); ctx.fill();
+    cut(id, x, y + (o.lift || 0), () => {
+      ctx.scale(s, s);
+      poly([[-122, -82], [-96, -82], [-92, -38], [-114, -38]]); fillP(o.trim);
+      poly([[96, -16], [136, -14], [136, -7], [96, -7]]); fillP(o.trim);
+      poly(BODY); fillP(o.body);
+      poly([[-44, -52], [-24, -78], [-12, -66]]); fillP(o.trim);
+      circ(-2, -66, 9); fillP(C.paper);
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 4; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-16, -70); ctx.quadraticCurveTo(6, -82, 26, -54); ctx.stroke();
+      circ(42, -33, 12); fillP(C.paper, .5);
+      ctx.fillStyle = C.ink; ctx.font = `400 ${o.num.length > 1 ? 12 : 15}px ${DISPLAY}`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(o.num, 42, -32);
+    }, 0, o.amp == null ? 1.4 : o.amp);
+    const ws = o.wheels || [{}, {}];
+    [-72, 78].forEach((wx, i) => {
+      const q = ws[i] || {};
+      wheel(id + 10 + i, x + wx * s, y + (-22 + (q.dy == null ? (o.lift || 0) : q.dy)) * s, o.rot || 0, q.stripe || o.stripe || C.yellow, 22 * s);
+    });
+  }
+  function crew(id, x, y, crouch) {
+    cut(id, x, y + (crouch ? 16 : 0), () => {
+      rect(-17, -72, 34, 72); fillP(C.navy);
+      rect(-17, -42, 34, 8); flat(C.yellow);
+      circ(0, -86, 15); fillP(C.paper);
+      rect(-1, -92, 15, 9); flat(C.ink);
+    }, crouch ? .12 : 0);
+  }
+  function cloud(id, x, y) {
+    cut(id, x, y, () => {
+      circ(0, 4, 22); fillP(C.paper); circ(28, -6, 28); fillP(C.paper); circ(58, 4, 20); fillP(C.paper);
+    }, 0, 1);
+  }
+
+  const HERO = { body: C.red, trim: C.ink, num: '7' };
+  const RIVAL = { body: C.pink, trim: C.navy, num: '21' };
+  const BACK = { body: C.teal, trim: C.ink, num: '4' };
+
+  /* ---------- scenes (u = pose within the scene, in 24ths of a second) ---------- */
+  function sTitle(u) {
+    set(C.title);
+    const shown = k => Math.max(0, Math.floor((u - 6) / 5) + 1 - k);
+    tiles(100, 'LIGHTS', W / 2, 178, 88, shown(0), (u - 6) % 5 < 2);
+    tiles(120, 'OUT', W / 2, 296, 88, shown(6), (u - 6) % 5 < 2 && u < 52);
+    if (u >= 52) strip(140, 'A PAPER GRAND PRIX IN FIVE SCENES', W / 2, 382, 17, C.yellow);
+    car(150, -160 + u * 17, 482, { ...HERO, sc: .62, rot: u * .8, amp: 1 });
+  }
+
+  function sGrid(u) {
+    set(C.skyA);
+    clipSet();
+    cloud(210, 120, 110); cloud(212, 700, 150);
+    rect(0, 250, W, 130); flat(C.navy);
+    crowd(34, 268, W - 60, 6, 3);
+    ground(0);
+    rect(606, 446, 70, 6); flat(C.paper); rect(670, 410, 6, 42); flat(C.paper);
+    rect(236, 446, 70, 6); flat(C.paper); rect(300, 410, 6, 42); flat(C.paper);
+    ctx.restore();
+
+    const go = u >= 80, d = go ? u - 80 : 0;
+    const rev = go ? 1.2 : 1 + (u / 80) * 2.4;
+    if (go) for (let k = 0; k < 5; k++) {
+      circ(430 + d * d * .5 - k * 26 - h(k, 4) * 20, GY - 12 - h(k, 6) * 26, 10 + h(k, 8) * 12); fillP(C.paper, .5);
+    }
+    car(230, 170 + d * d * .7, GY - 6, { ...RIVAL, sc: .95, amp: rev, rot: d * d * .06, stripe: C.paper });
+    car(250, 540 + d * d * .9, GY + 10, { ...HERO, sc: 1.05, amp: rev, rot: d * d * .06, stripe: C.red });
+
+    // start gantry
+    rect(232, 84, 10, 300); fillP(C.ink); rect(718, 84, 10, 300); fillP(C.ink);
+    cut(260, 480, 84, () => { rect(-262, -32, 524, 64); fillP(C.ink, 1.5); }, 0, .8);
+    for (let i = 0; i < 5; i++) {
+      const lit = u >= 12 * (i + 1) && !go;
+      cut(270 + i, 300 + i * 90, 84, () => {
+        circ(0, 0, 20);
+        if (lit) { ctx.shadowColor = C.red; ctx.shadowBlur = 26 * dpr; ctx.fillStyle = '#ff3b1f'; ctx.fill(); ctx.shadowColor = 'transparent'; }
+        else flat('#4a1d1a');
+      }, 0, .8);
+    }
+  }
+
+  function sRace(u, len) {
+    const p = u / len, s = u * 14;
+    set(C.skyB);
+    clipSet();
+    circ(770, 120, 46); fillP('#fff3d6', .4);
+    rep(420, .08, s, (x, k) => cloud(300 + (k & 7), x + 60, 90 + hs(k, 2) * 60));
+    rep(320, .2, s, (x, k) => { poly([[x, 384], [x + 150, 236 + hs(k, 5) * 70], [x + 330, 384]]); fillP(C.green2, .6); });
+    rep(560, .5, s, (x, k) => {
+      rect(x + 40, 286, 280, 96); fillP(C.navy);
+      rect(x + 30, 274, 300, 14); fillP(PARTY[((k % 4) + 4) % 4]);
+      ctx.save(); ctx.translate(x + 50, 304); crowd(0, 0, 250, 4, 2); ctx.restore();
+    });
+    rep(190, .75, s, (x, k) => {
+      rect(x + 20, 340, 10, 44); flat(C.brown);
+      circ(x + 25, 322, 26 + hs(k, 9) * 8); fillP(C.grass, .7);
+    });
+    ground(s);
+    rep(170, 1, s, x => { rect(x, 470, 70, 6); flat(C.paper); });
+    ctx.restore();
+
+    const rot = u * .9;
+    const hx = 150 + ease((p - .2) / .65) * 480;
+    car(330, 420 - ease(p * 2) * 720, GY - 8, { ...BACK, sc: .95, rot, stripe: C.paper });
+    car(350, 640 - ease((p - .25) / .6) * 330, GY - 8, { ...RIVAL, sc: .95, rot, stripe: C.yellow });
+    for (let k = 0; k < 5; k++) { rect(hx - 170 - h(k, 12) * 130, GY - 12 - h(k, 14) * 62, 36 + h(k, 16) * 60, 4); flat('rgba(241,236,223,.85)'); }
+    car(370, hx, GY + 14, { ...HERO, sc: 1.05, rot, stripe: C.paper });
+    strip(390, 'LAP 38/52', 122, 62, 16);
+    if (p > .78) strip(392, 'CAR 7 TAKES THE LEAD', W / 2, 62, 16, C.yellow);
+  }
+
+  function sPit(u) {
+    set(C.skyC);
+    clipSet();
+    rect(0, 120, W, 54); flat(C.navy);
+    for (let i = 0; i < 3; i++) { rect(70 + i * 300, 196, 230, 196); flat(C.ink); rect(70 + i * 300, 196, 230, 22); flat(PARTY[i]); }
+    ground(0);
+    rect(320, 450, 330, 6); flat(C.yellow); rect(644, 404, 6, 50); flat(C.yellow);
+    ctx.restore();
+    strip(410, 'PIT LANE · 80 KM/H', 190, 147, 15);
+
+    const stopped = u >= 30 && u < 96;
+    const cx = u < 30 ? -170 + ease(u / 30) * 650 : u < 96 ? 480 : 480 + (u - 96) * (u - 96) * .32;
+    const lift = u >= 34 && u < 90 ? -9 : 0;
+    const busy = u >= 38 && u < 88;
+    crew(420, 408, GY - 34, busy); crew(422, 558, GY - 34, busy); crew(424, 668, GY - 20, u >= 34 && u < 92);
+
+    let wd;
+    if (u < 40) wd = { stripe: C.paper };
+    else if (u < 60) wd = { stripe: C.paper, dy: lift + (u - 40) * 8 };
+    else if (u < 84) wd = { stripe: C.red, dy: lift + (84 - u) * 6.5 };
+    else wd = { stripe: C.red };
+    car(440, cx, GY + 8, { ...HERO, lift, rot: stopped ? 0 : u * .9, wheels: [wd, wd], amp: stopped ? .9 : 1.4 });
+
+    // pit light and stop clock
+    cut(460, 300, 250, () => {
+      rect(-20, -40, 40, 80); fillP(C.ink);
+      circ(0, -18, 12); flat(stopped && u < 90 ? '#ff3b1f' : '#4a1d1a');
+      circ(0, 18, 12); flat(u >= 90 ? '#4fe07a' : '#1d4a2a');
+    }, 0, .8);
+    const t = Math.min(1, Math.max(0, (u - 30) / 60)) * 2.2;
+    cut(470, 780, 100, () => {
+      rect(-108, -52, 216, 104); fillP(C.paper, 1.5);
+      ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = `500 13px ${MONO}`; ctx.fillText('STATIONARY TIME', 0, -30);
+      ctx.font = `400 46px ${DISPLAY}`; ctx.fillText(t.toFixed(2) + 's', 0, 12);
+    }, .04);
+    if (u >= 60 && u < 96) strip(480, 'HARD → SOFT', 780, 182, 15, C.yellow);
+  }
+
+  function sFinish(u) {
+    set(C.skyD);
+    clipSet();
+    cloud(510, 620, 90);
+    rect(0, 236, W, 146); flat(C.navy);
+    crowd(34, 252, W - 60, 7, u >= 60 ? 9 : 3);
+    ground(0);
+    for (let r = 0; r < 8; r++) for (let c = 0; c < 2; c++) { rect(640 + c * 12, 392 + r * 12.25, 12, 12.25); flat((r + c) % 2 ? C.ink : C.paper); }
+    ctx.restore();
+
+    rect(150, 96, 8, 296); fillP(C.grey);
+    for (let c = 0; c < 6; c++) {
+      const wave = Math.round(Math.sin(u * .45 + c * .9) * 9);
+      for (let r = 0; r < 4; r++) cut(520 + c * 4 + r, 160 + c * 28, 104 + r * 28 + wave, () => { rect(0, 0, 28, 28); fillP((r + c) % 2 ? C.ink : C.paper, .5); }, 0, .7);
+    }
+    const hx = -200 + u * 14;
+    car(550, hx - 310, GY - 8, { ...RIVAL, sc: .95, rot: u * .9, stripe: C.yellow });
+    car(570, hx, GY + 14, { ...HERO, sc: 1.05, rot: u * .9, stripe: C.red });
+
+    if (u >= 60) for (let i = 0; i < 70; i++) {
+      const y = -10 + (u - 60 - hs(i, 5) * 22) * (6 + hs(i, 7) * 6);
+      if (y < 0 || y > H) continue;
+      cut(600 + i, 40 + hs(i, 3) * (W - 80), y, () => { rect(-6, -4, 12, 8); fillP(PARTY[i % PARTY.length], .4); }, h(i, 9) * 3, 3);
+    }
+    if (u >= 64) tiles(680, 'P1', W / 2 + 60, 190, 124, 2, u < 68);
+    if (u >= 78) strip(690, 'CAR 7 WINS THE PAPER GRAND PRIX', W / 2 + 60, 300, 17, C.yellow);
+  }
+
+  const SCENES = [
+    { name: 'Title card', len: 72, draw: sTitle },
+    { name: 'Start lights', len: 96, draw: sGrid },
+    { name: 'The overtake', len: 192, draw: sRace },
+    { name: 'Pit stop', len: 144, draw: sPit },
+    { name: 'Chequered flag', len: 120, draw: sFinish }
+  ];
+  const TOTAL = SCENES.reduce((a, s) => a + s.len, 0);
+  const vig = ctx.createRadialGradient(W / 2, H / 2, 240, W / 2, H / 2, 620);
+  vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(0,0,0,.5)');
+
+  /* ---------- playback ---------- */
+  const $ = id => document.getElementById(id);
+  const ui = { sc: $('sc'), scn: $('scn'), fr: $('fr'), fpsl: $('fpsl'), scrub: $('scrub'), play: $('play'), sheet: $('sheet') };
+  let start = 0;
+  const jumps = SCENES.map((s, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = i + 1; b.style.flex = s.len + ' 1 0';
+    b.title = s.name; b.setAttribute('aria-label', `Scene ${i + 1}: ${s.name}`);
+    const at = start; start += s.len;
+    b.addEventListener('click', () => { tick = at; acc = 0; dirty = true; });
+    ui.sheet.appendChild(b);
+    return b;
+  });
+
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let tick = still ? 72 + 66 : 0, hold = 2, playing = !still, acc = 0, last = performance.now(), shown = -1, dirty = true;
+
+  function draw(pose) {
+    P = pose;
+    let u = pose, si = 0;
+    while (u >= SCENES[si].len) { u -= SCENES[si].len; si++; }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    SCENES[si].draw(u, SCENES[si].len);
+    ctx.fillStyle = `rgba(255,232,190,${(h(1, 9) * .06).toFixed(3)})`; ctx.fillRect(0, 0, W, H); // lamp flicker
+    ctx.fillStyle = vig; ctx.fillRect(0, 0, W, H);
+    ui.sc.textContent = `${si + 1} of ${SCENES.length}`;
+    ui.scn.textContent = SCENES[si].name;
+    ui.fr.textContent = `${String(pose + 1).padStart(3, '0')} / ${TOTAL}`;
+    ui.scrub.value = pose;
+    jumps.forEach((b, i) => b.setAttribute('aria-current', i === si ? 'true' : 'false'));
+  }
+  function loop(now) {
+    if (playing) {
+      acc = Math.min(acc + now - last, 250);
+      while (acc >= 1000 / 24) { acc -= 1000 / 24; tick = (tick + 1) % TOTAL; }
+    }
+    last = now;
+    const pose = Math.floor(tick / hold) * hold;
+    if (pose !== shown || dirty) { draw(pose); shown = pose; dirty = false; }
+    requestAnimationFrame(loop);
+  }
+  function setPlaying(v) { playing = v; acc = 0; ui.play.textContent = v ? 'Pause' : 'Play'; }
+  setPlaying(playing);
+
+  ui.play.addEventListener('click', () => setPlaying(!playing));
+  $('step').addEventListener('click', () => { setPlaying(false); tick = (Math.floor(tick / hold) * hold + hold) % TOTAL; });
+  $('restart').addEventListener('click', () => { tick = 0; setPlaying(true); });
+  ui.scrub.addEventListener('input', () => { tick = +ui.scrub.value; acc = 0; dirty = true; });
+  document.querySelectorAll('input[name="hold"]').forEach(r => r.addEventListener('change', () => {
+    hold = +r.value; ui.fpsl.textContent = `${24 / hold} fps`; dirty = true;
+  }));
+
+  if (document.fonts) {
+    document.fonts.load(`40px ${DISPLAY}`); document.fonts.load(`500 16px ${MONO}`);
+    document.fonts.ready.then(() => { dirty = true; });
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+
+</body></html>

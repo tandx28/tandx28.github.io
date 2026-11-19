@@ -1,0 +1,314 @@
+---
+import { getCollection } from 'astro:content';
+import { profile } from '../data/profile';
+
+const projects = (await getCollection('projects'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((p) => ({ id: p.id, title: p.data.title, tagline: p.data.short, live: p.data.live ?? p.data.play ?? null, featured: p.data.tier === 'featured' }));
+
+// Data the interactive terminal answers from. Kept here so the copy matches
+// the rest of the page.
+const termData = {
+  name: profile.name,
+  email: profile.email,
+  github: profile.github,
+  linkedin: profile.linkedin,
+  resume: profile.resume,
+  projects,
+};
+---
+
+<section class="hero" id="top">
+  <div class="container grid">
+    <div class="copy">
+      <p class="status mono" data-reveal>
+        <span class="dot"></span> Open to Summer 2027 internships
+      </p>
+      <h1 data-reveal style="--i:1">
+        <span class="hi mono">Hi, I'm</span>
+        <span class="name" data-scramble>{profile.name}</span>
+      </h1>
+      <p class="sub" data-reveal style="--i:2">
+        I build <span class="rot" data-rotate='["web products","3D browser games","stop-motion films","full-stack APIs","things with AI"]'>web products</span>
+        <br />and study Computer Science at <strong>NUS</strong>.
+      </p>
+      <div class="ctas" data-reveal style="--i:3">
+        <a class="btn primary" href="#work" data-magnetic>See my work <span class="arrow">→</span></a>
+        <a class="btn" href={profile.resume} target="_blank" rel="noopener" data-magnetic>Résumé <span class="arrow">↗</span></a>
+      </div>
+      <ul class="meta mono" data-reveal style="--i:4">
+        <li><span>loc</span> {profile.location}</li>
+        <li><span>now</span> CS @ NUS, Year 1</li>
+        <li><span>into</span> SWE · AI · cloud · tech for good</li>
+      </ul>
+    </div>
+
+    <div class="term" data-reveal style="--i:2" data-tilt>
+      <div class="chrome">
+        <span></span><span></span><span></span>
+        <p class="mono">dexun@portfolio: ~</p>
+      </div>
+      <div class="screen mono" data-terminal tabindex="0" aria-label="Interactive terminal. Type help and press Enter.">
+        <div class="out" aria-live="polite"></div>
+        <form class="line" autocomplete="off">
+          <label class="ps1" for="term-in">❯</label>
+          <input id="term-in" type="text" spellcheck="false" autocapitalize="off" aria-label="Terminal input" />
+        </form>
+      </div>
+      <script type="application/json" id="term-data" set:html={JSON.stringify(termData)} />
+    </div>
+  </div>
+  <a class="scroll mono" href="#about" aria-label="Scroll to about">
+    <span>scroll</span><i></i>
+  </a>
+</section>
+
+<style>
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding: 120px 0 90px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 7px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    margin: 0 0 28px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
+    animation: ping 2s infinite;
+  }
+  @keyframes ping {
+    70% {
+      box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+    }
+  }
+  h1 {
+    margin: 0;
+    line-height: 0.95;
+  }
+  .hi {
+    display: block;
+    font-size: clamp(15px, 1.6vw, 18px);
+    font-weight: 400;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .name {
+    display: block;
+    font-size: clamp(52px, 9vw, 112px);
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    background: linear-gradient(180deg, var(--text) 40%, color-mix(in srgb, var(--text) 45%, transparent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0.08em;
+  }
+  .sub {
+    font-size: clamp(19px, 2.2vw, 26px);
+    line-height: 1.4;
+    color: var(--muted);
+    margin: 26px 0 34px;
+    letter-spacing: -0.01em;
+  }
+  .sub strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .rot {
+    color: var(--text);
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent);
+    white-space: nowrap;
+  }
+  .ctas {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .meta {
+    list-style: none;
+    padding: 0;
+    margin: 40px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 26px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .meta span {
+    color: var(--faint);
+    margin-right: 6px;
+  }
+
+  /* Terminal window */
+  .term {
+    border-radius: 16px;
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--surface-solid) 86%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.6s var(--ease);
+  }
+  .chrome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg-2) 70%, transparent);
+  }
+  .chrome span {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+  .chrome span:nth-child(1) {
+    background: #ff5f57;
+  }
+  .chrome span:nth-child(2) {
+    background: #febc2e;
+  }
+  .chrome span:nth-child(3) {
+    background: #28c840;
+  }
+  .chrome p {
+    margin: 0 auto;
+    font-size: 12px;
+    color: var(--faint);
+    transform: translateX(-20px);
+  }
+  .screen {
+    height: 380px;
+    overflow-y: auto;
+    padding: 18px 18px 14px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    cursor: text;
+    scrollbar-width: thin;
+  }
+  .screen :global(.cmd) {
+    color: var(--text);
+  }
+  .screen :global(.cmd::before) {
+    content: '❯ ';
+    color: var(--accent);
+  }
+  .screen :global(.dim) {
+    color: var(--muted);
+  }
+  .screen :global(.acc) {
+    color: var(--accent);
+  }
+  .screen :global(.acc2) {
+    color: var(--accent-2);
+  }
+  .screen :global(.warn) {
+    color: var(--warn);
+  }
+  .screen :global(a) {
+    color: var(--accent-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .screen :global(pre) {
+    margin: 0;
+    font: inherit;
+    white-space: pre-wrap;
+  }
+  .line {
+    display: flex;
+    gap: 8px;
+  }
+  .ps1 {
+    color: var(--accent);
+  }
+  input {
+    flex: 1;
+    min-width: 0;
+    background: none;
+    border: 0;
+    outline: 0;
+    color: var(--text);
+    font: inherit;
+    caret-color: var(--accent);
+  }
+
+  .scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--faint);
+    letter-spacing: 0.1em;
+  }
+  .scroll i {
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(var(--accent), transparent);
+    animation: drop 2s var(--ease) infinite;
+    transform-origin: top;
+  }
+  @keyframes drop {
+    0% {
+      transform: scaleY(0);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 0;
+    }
+  }
+  @media (max-width: 520px) {
+    .screen {
+      font-size: 12.5px;
+    }
+    .screen :global(.ls-d) {
+      display: none;
+    }
+  }
+  @media (max-width: 920px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .screen {
+      height: 300px;
+    }
+    .scroll {
+      display: none;
+    }
+  }
+</style>
