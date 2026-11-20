@@ -594,7 +594,7 @@ function initTerminal() {
     whoami: {
       help: 'who is this',
       run: () =>
-        `<span class="acc2">${esc(data.name)}</span> <span class="dim">· CS @ NUS · Singapore</span><br/>builds software with AI agents, and tests everything they write.`,
+        `<span class="acc2">${esc(data.name)}</span> <span class="dim">· CS @ NUS · Singapore</span><br/>software engineer, growing into DevOps and cloud, curious about what AI can do.`,
     },
     ls: {
       help: 'list projects',
@@ -653,7 +653,7 @@ function initTerminal() {
 <span class="acc">  █▄▄▄▄█  </span>  <span class="dim">os</span>      NUS CS, Year 1
 <span class="acc">   █  █   </span>  <span class="dim">shell</span>   TS · Python · C# · Java
 <span class="acc">  ▀▀  ▀▀  </span>  <span class="dim">uptime</span>  coding since 2021
-            <span class="dim">focus</span>   SWE · cloud · security</pre>`,
+            <span class="dim">focus</span>   SWE · DevOps · cloud</pre>`,
     },
     clear: { help: 'clear the screen', run: () => void (out.innerHTML = '') },
     date: { help: '', run: () => new Date().toString() },

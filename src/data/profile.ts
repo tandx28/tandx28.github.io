@@ -10,7 +10,7 @@ export const profile = {
   linkedin: 'https://www.linkedin.com/in/dexun19',
   resume: '/resume.pdf',
   blurb:
-    'NUS Computer Science student and software engineer who builds with AI: full-stack apps, agent workflows and automations, shipped with tests and CI. Curious about every new tool, and learns it by building something real.',
+    'NUS Computer Science student and software engineer growing into DevOps and cloud. Builds full-stack apps and CI/CD pipelines, and explores what AI can do as one more tool, always with tests behind it.',
 };
 
 export const nav = [
@@ -97,7 +97,8 @@ export const stack: { group: string; items: string[] }[] = [
   { group: 'languages', items: ['TypeScript', 'JavaScript', 'Python', 'C#', 'Java', 'SQL', 'R'] },
   { group: 'frontend', items: ['Angular', 'React', 'Astro', 'Three.js', 'Vite', 'Webpack'] },
   { group: 'backend', items: ['.NET', 'Node.js', 'REST', 'Swagger', 'Postman', 'Keycloak'] },
-  { group: 'cloud & data', items: ['AWS', 'Vercel', 'GitHub Actions', 'Docker', 'Redis', 'MySQL', 'SQL Server', 'MongoDB'] },
+  { group: 'devops & cloud', items: ['GitHub Actions', 'CI/CD', 'Docker', 'AWS (serverless)', 'Vercel', 'Linux', 'launchd / cron'] },
+  { group: 'data', items: ['MySQL', 'SQL Server', 'MongoDB', 'Redis'] },
   { group: 'ai', items: ['Claude Code', 'Codex', 'Claude API', 'Ollama', 'MCP', 'Sub-agents', 'Prompt design'] },
   { group: 'practice', items: ['Vitest', 'node:test', 'CI/CD', 'Git', 'Secure coding'] },
 ];

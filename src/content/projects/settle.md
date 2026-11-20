@@ -24,6 +24,12 @@ A fast, private payment calculator for game nights in Singapore. Each player ent
 a result, or their chip count and buy-ins, and Settle works out the fewest transfers
 that settle the table.
 
+## How it started
+
+I wrote the first version by hand in September 2024 as a simple calculator for Chinese New Year
+card games with friends. In 2026 I rebuilt it into what it is now: shared live tables, exact chip
+maths, PayNow QR codes and a test suite.
+
 ## Shared tables
 
 A host opens a table that lasts 24 hours and shares an invite link or QR code. Players

@@ -1,35 +1,39 @@
 ---
-title: Local AI content pipeline
-short: 'local LLM + image model pipeline'
-tagline: A pipeline that plans, writes, reviews, illustrates, narrates and renders a short video entirely with local models, then uploads it through the YouTube API. No API costs.
+title: Content pipeline service
+short: 'scheduled media pipeline (building)'
+tagline: A scheduled backend pipeline that plans, renders and publishes short videos end to end, built as small restartable stages with idempotent uploads. In progress.
 tier: featured
 order: 6
 year: '2026'
 role: Solo developer
-status: private
-stack: [Python, Ollama, Qwen, FLUX, FFmpeg, YouTube Data API]
+status: in progress
+stack: [Python, FFmpeg, YouTube Data API, launchd, Ollama]
 accent: '#c084fc'
 stats:
-  - { value: '$0', label: 'per run in API fees' }
-  - { value: '5', label: 'stages, each checkable' }
+  - { value: '5', label: 'restartable stages' }
+  - { value: '0', label: 'duplicate uploads by design' }
 ---
 
-## What it does
+## What I'm building
 
-Each run produces a five-scene illustrated learning story: a local language model (Qwen 9B on
-Ollama) plans and writes it, then reviews its own draft against a checklist; a local image
-model (FLUX) draws one reference portrait and uses it to keep the character consistent across
-scenes; macOS speech narrates; FFmpeg renders a 720p video; the YouTube Data API uploads it.
+A backend job that turns a topic into a finished, uploaded video every day without anyone
+touching it: plan the content, generate assets, add narration, render with FFmpeg and publish
+through the YouTube Data API. The first version runs on one machine on a schedule; the
+current work is making it portable.
 
-## Engineering choices
+## How it is put together
 
-- **Local models, zero marginal cost.** Everything runs on one Mac, so a daily job costs nothing
-  per run. The trade-off is time and disk, which the README documents.
-- **Every stage writes files.** The plan, images, audio and video are saved per day, so a bad
-  scene can be regenerated alone instead of rerunning the whole pipeline.
-- **No double uploads.** The job records the video ID after upload and stops if a previous run
-  was interrupted mid-upload, so a retry never publishes twice.
-- **Honest limits.** Automated checks cannot judge whether a story is good, so the README says
-  plainly that a human reviews the first videos.
+- **Stages with files in between.** Each stage writes its output (plan, images, audio, video,
+  state) to a dated folder, so any stage can be rerun alone instead of redoing the whole job.
+- **Idempotent publishing.** The job records the video ID after upload and refuses to retry
+  blindly if a previous run stopped mid-upload, so a network failure can never post twice.
+- **Scheduled like a service.** A macOS LaunchAgent runs it daily with logs to disk; OAuth
+  tokens and settings live outside the repository.
+- **Local generation, no API bill.** Content and images come from local models today, so a
+  daily run costs nothing beyond the machine it runs on.
 
-The project is archived; it was a study in running a full generative pipeline on local hardware.
+## What's next
+
+Add the hosted-model adapters, package the pipeline in a container, move the schedule to a
+cloud runner, and add health checks and alerts so a failed day is noticed. This is where I'm
+practising the DevOps side: deployment, scheduling, secrets and monitoring.

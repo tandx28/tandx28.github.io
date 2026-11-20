@@ -1,7 +1,7 @@
 ---
 title: Gatebound
 short: '3D browser action game'
-tagline: A 3D browser game I built by directing AI agents, kept honest by 640+ tests, CI and a bot that plays every level to measure the difficulty.
+tagline: A 3D browser game I built while exploring AI pair programming, kept honest by 640+ unit tests, CI and a bot that plays every level to measure the difficulty.
 tier: featured
 order: 3
 year: '2026'
