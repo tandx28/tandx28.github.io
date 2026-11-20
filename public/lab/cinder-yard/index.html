@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta name="description" content="A first-person wave shooter in an abandoned foundry, with procedural textures and sound. A 3D browser game built with AI by Tan De Xun."><link rel="canonical" href="https://tandx28.github.io/lab/cinder-yard/"><meta property="og:type" content="website"><meta property="og:title" content="Cinder Yard | Tan De Xun"><meta property="og:description" content="A first-person wave shooter in an abandoned foundry, with procedural textures and sound. A 3D browser game built with AI by Tan De Xun."><meta property="og:url" content="https://tandx28.github.io/lab/cinder-yard/"><meta property="og:image" content="https://tandx28.github.io/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="author" content="Tan De Xun"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="description" content="A first-person wave shooter in an abandoned foundry, with procedural textures and sound. A 3D browser game built with AI by Tan De Xun."><link rel="canonical" href="https://tandx28.github.io/lab/cinder-yard/"><meta property="og:type" content="website"><meta property="og:title" content="Cinder Yard | Tan De Xun"><meta property="og:description" content="A first-person wave shooter in an abandoned foundry, with procedural textures and sound. A 3D browser game built with AI by Tan De Xun."><meta property="og:url" content="https://tandx28.github.io/lab/cinder-yard/"><meta property="og:image" content="https://tandx28.github.io/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="author" content="Tan De Xun"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Cinder Yard</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Share+Tech+Mono&display=swap">
@@ -139,6 +139,22 @@ input[type=range]{accent-color:var(--amber);width:min(220px,60vw);vertical-align
 .how ul{margin:8px 0 2px;padding-left:18px;display:flex;flex-direction:column;gap:5px;line-height:1.4}
 #dark{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,.88) 100%)}
 </style>
+<style id="portfolio-layout-fix">
+/* Portfolio fix: the menus hugged the left edge and clipped at the top on short
+   screens. Centre the card vertically (margin-block:auto keeps it scrollable
+   when it is taller than the window) and give it room from the edge. */
+.screen{align-items:flex-start;justify-content:flex-start;padding-block:clamp(20px,5vh,56px);padding-left:max(clamp(20px,7vw,120px),env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));background:linear-gradient(100deg,rgba(4,7,9,.95) 0%,rgba(4,7,9,.8) 45%,rgba(4,7,9,.25) 100%)}
+.screen>.card{margin-block:auto;max-width:600px;width:100%}
+.screen .keys{grid-template-columns:auto 1fr}
+/* Wide screens: controls list in a second column so the whole menu fits. */
+@media (min-width:1100px){
+#start>.card{max-width:1060px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);column-gap:56px;row-gap:16px;align-items:start}
+#start>.card>*{grid-column:1}
+#start>.card>button.go,#start>.card>.note{justify-self:start}
+#start>.card>.keys{grid-column:2;grid-row:2 / span 9;align-self:start;background:rgba(4,7,9,.72);border:1px solid var(--line);padding:14px 16px}
+}
+</style>
+
 
 <div id="game">
   <canvas id="view" tabindex="0" aria-label="Cinder Yard game view"></canvas>

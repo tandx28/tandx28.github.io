@@ -3,7 +3,7 @@ title: Settle
 short: 'game-night settle-up app'
 tagline: Settle up after mahjong, poker or card nights in seconds, with shared live tables and PayNow QR codes made on the device.
 tier: featured
-order: 1
+order: 2
 year: '2024 - 2026'
 role: Solo developer
 status: live
