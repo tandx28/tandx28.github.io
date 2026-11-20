@@ -1,4 +1,5 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
 // One Markdown file per project. Front matter drives the cards; the body is
@@ -21,8 +22,8 @@ const projects = defineCollection({
     role: z.string().optional(),
     status: z.enum(['live', 'in progress', 'private']).default('live'),
     stack: z.array(z.string()),
-    live: z.string().url().optional(),
-    repo: z.string().url().optional(),
+    live: z.url().optional(),
+    repo: z.url().optional(),
     /** Two or three short facts shown as big numbers on the case study. */
     stats: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
     /** Screenshot under public/, shown on the card and case study. */
