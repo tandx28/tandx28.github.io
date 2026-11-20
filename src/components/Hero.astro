@@ -1,8 +1,12 @@
 ---
+import { Image } from 'astro:assets';
 import { profile } from '../data/profile';
+import headshot from '../assets/photos/headshot.jpg';
 ---
 
 <header class="hero container" id="top">
+  <div class="grid">
+  <div class="copy">
   <p class="hello" data-reveal>Hello, I'm</p>
   <h1 data-reveal style="--i:1">Tan De Xun.</h1>
   <p class="intro" data-reveal style="--i:2">
@@ -25,12 +29,46 @@ import { profile } from '../data/profile';
     <li><span>Studying</span>Computer Science, NUS (Year 1)</li>
     <li><span>Looking for</span>Summer 2027 SWE internships</li>
   </ul>
+  </div>
+  <figure class="portrait" data-reveal style="--i:2">
+    <Image src={headshot} alt="Tan De Xun smiling in an open-plan office" widths={[320, 480, 640]} sizes="(max-width: 860px) 60vw, 320px" format="webp" quality={80} loading="eager" fetchpriority="high" class="portrait-img" />
+  </figure>
+  </div>
 </header>
 
 <style>
   .hero {
     padding-top: clamp(120px, 16vw, 180px);
     padding-bottom: clamp(56px, 8vw, 96px);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: clamp(32px, 6vw, 72px);
+    align-items: start;
+  }
+  .copy {
+    min-width: 0;
+  }
+  .portrait {
+    margin: 52px 0 0;
+  }
+  .portrait :global(.portrait-img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 45% 30%;
+    border-radius: 10px;
+  }
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .portrait {
+      order: -1;
+      margin: 0;
+      width: min(220px, 60vw);
+    }
   }
   .hello {
     margin: 0 0 6px;
