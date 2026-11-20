@@ -11,7 +11,7 @@ stack: [TypeScript, Three.js, Vite, Vitest, Web Audio, GitHub Actions]
 live: https://tandx28.github.io/gatebound/
 repo: https://github.com/tandx28/gatebound
 cover: ../../assets/shots/gatebound.jpg
-accent: '#1f4fd1'
+accent: '#60a5fa'
 stats:
   - { value: '27k', label: 'lines of TypeScript' }
   - { value: '640+', label: 'unit tests' }

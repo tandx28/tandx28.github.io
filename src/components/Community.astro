@@ -1,0 +1,167 @@
+---
+import { Image } from 'astro:assets';
+import { press } from '../data/profile';
+import gdg from '../assets/photos/gdg-nus.jpg';
+import work from '../assets/photos/headshot.jpg';
+---
+
+<section id="community">
+  <div class="container">
+    <p class="eyebrow" data-reveal>07 / community</p>
+    <h2 class="h2" data-reveal data-scramble-on-view>Out in the <span class="grad">tech world.</span></h2>
+    <p class="lede" data-reveal style="--i:1">Where I learn, teach and get my work seen outside the screen.</p>
+
+    <div class="bento">
+      <figure class="tile big" data-reveal data-spotlight>
+        <Image src={gdg} alt="Members of Google Developer Group at NUS Computing posing in front of the group's logo" widths={[640, 1000, 1400]} sizes="(max-width: 860px) 92vw, 700px" format="webp" quality={76} class="ph" />
+        <figcaption>
+          <span class="tag mono">community</span>
+          Tech Associate with <strong>Google Developer Group @ NUS Computing</strong>.
+        </figcaption>
+      </figure>
+
+      {press.map((a) => (
+        <a class="tile press" href={a.url} target="_blank" rel="noopener" data-reveal data-spotlight style="--i:1">
+          <div class="ph-wrap">
+            <Image src={work} alt="Tan De Xun at the Singapore Police Force Cybercrime Command office" widths={[400, 640]} sizes="(max-width: 860px) 92vw, 360px" format="webp" quality={78} class="ph" />
+          </div>
+          <div class="txt">
+            <span class="tag mono">featured · {a.outlet} · {a.date}</span>
+            <h3>{a.title} <span class="arr">↗</span></h3>
+            <p>{a.note}</p>
+          </div>
+        </a>
+      ))}
+
+      <div class="tile list" data-reveal data-spotlight style="--i:2">
+        <span class="tag mono">also</span>
+        <ul>
+          <li><b>Platform &amp; Quality Lead</b> for a student team rebuilding a school website with SiloamXperience.</li>
+          <li><b>Pioneer batch</b> of the SPF national service cybercrime operators; SPF Director’s Award.</li>
+          <li><b>Shipping in public</b> on <a href="https://github.com/tandx28" target="_blank" rel="noopener">GitHub</a>: every project here deploys through CI.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bento {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+  }
+  .tile {
+    --mx: 50%;
+    --my: 50%;
+    position: relative;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background:
+      radial-gradient(360px circle at var(--mx) var(--my), var(--glow), transparent 60%),
+      var(--surface);
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .tile:hover {
+    border-color: var(--line-strong);
+  }
+  .big {
+    grid-row: span 2;
+    display: flex;
+    flex-direction: column;
+  }
+  .big :global(.ph) {
+    width: 100%;
+    flex: 1;
+    min-height: 260px;
+    object-fit: cover;
+  }
+  figcaption,
+  .txt,
+  .list {
+    padding: 18px 20px 20px;
+  }
+  figcaption {
+    color: var(--muted);
+    font-size: 15px;
+  }
+  figcaption strong,
+  .list b {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .tag {
+    display: block;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+  .press {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    text-decoration: none;
+  }
+  .ph-wrap {
+    overflow: hidden;
+  }
+  .ph-wrap :global(.ph) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 45% 30%;
+    transition: transform 0.8s var(--ease);
+  }
+  .press:hover :global(.ph) {
+    transform: scale(1.05);
+  }
+  .press h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .arr {
+    color: var(--accent);
+  }
+  .press p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .list ul {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+  .list li {
+    margin: 6px 0;
+  }
+  .list li::marker {
+    color: var(--accent);
+  }
+  .list a {
+    color: var(--accent-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  @media (max-width: 860px) {
+    .bento {
+      grid-template-columns: 1fr;
+    }
+    .big {
+      grid-row: auto;
+    }
+    .press {
+      grid-template-columns: 1fr;
+    }
+    .ph-wrap {
+      aspect-ratio: 16 / 10;
+    }
+  }
+</style>

@@ -5,9 +5,9 @@ import Base from '../layouts/Base.astro';
 <Base title="404 · Tan De Xun">
   <section class="container nf">
     <p class="mono code">bash: <span>{Astro.url.pathname}</span>: No such file or directory</p>
-    <h1>404</h1>
+    <h1 data-scramble>404</h1>
     <p>That page does not exist. Press <kbd class="mono">⌘K</kbd> to find what you were after.</p>
-    <a class="btn primary" href="/">Back to home</a>
+    <a class="btn primary" href="/">cd ~ <span class="arrow">→</span></a>
   </section>
 </Base>
 
@@ -21,14 +21,12 @@ import Base from '../layouts/Base.astro';
     padding-top: 120px;
   }
   .code {
-    color: var(--faint);
+    color: var(--err);
     font-size: 14px;
   }
   h1 {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(100px, 22vw, 220px);
-    letter-spacing: -0.02em;
+    font-size: clamp(100px, 22vw, 240px);
+    letter-spacing: -0.07em;
     line-height: 0.9;
     margin: 0;
   }

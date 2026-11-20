@@ -11,7 +11,7 @@ stack: [JavaScript, Node.js, Webpack, Redis, Vercel, node:test]
 live: https://settlelah-sg.vercel.app
 repo: https://github.com/tandx28/Payment_Calculator
 cover: ../../assets/shots/settle.jpg
-accent: '#1f4fd1'
+accent: '#a3e635'
 stats:
   - { value: '0', label: 'cents lost to rounding' }
   - { value: '24h', label: 'shared table lifetime' }

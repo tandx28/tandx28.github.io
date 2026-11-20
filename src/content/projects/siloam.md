@@ -8,7 +8,7 @@ year: '2026'
 role: Platform & Quality Lead
 status: in progress
 stack: [WordPress, PHP, CSS, GitHub Actions, Next.js, Prisma]
-accent: '#1f4fd1'
+accent: '#fbbf24'
 stats:
   - { value: '3', label: 'people on my team' }
   - { value: 'QA', label: 'reviews, checks, CI' }

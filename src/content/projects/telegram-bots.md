@@ -7,5 +7,5 @@ order: 7
 year: '2025 - 2026'
 status: private
 stack: [Python, Telegram Bot API, Scheduling]
-accent: '#1f4fd1'
+accent: '#38bdf8'
 ---

@@ -8,7 +8,7 @@ year: '2026'
 role: Solo developer
 status: private
 stack: [Python, Canvas API, Claude Code, Codex, Notion, Obsidian]
-accent: '#1f4fd1'
+accent: '#5eead4'
 stats:
   - { value: '5', label: 'modules synced nightly' }
   - { value: '2', label: 'agents with separate jobs' }

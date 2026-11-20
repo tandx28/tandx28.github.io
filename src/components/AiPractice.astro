@@ -1,0 +1,99 @@
+---
+import { practices } from '../data/profile';
+---
+
+<section id="ai">
+  <div class="container">
+    <p class="eyebrow" data-reveal>02 / how i build with ai</p>
+    <h2 class="h2" data-reveal data-scramble-on-view>AI writes the code. <span class="grad">I own the outcome.</span></h2>
+    <p class="lede" data-reveal style="--i:1">
+      Leveraging AI well is an engineering skill: giving models the right context, keeping the cost sensible and proving that
+      what comes back works. These four habits do most of it.
+    </p>
+
+    <div class="grid">
+      {practices.map((p, i) => (
+        <article class="card" data-reveal data-spotlight style={`--i:${i % 2}`}>
+          <p class="top mono"><span class="n">0{i + 1}</span><span class="k">{p.k}</span></p>
+          <h3>{p.title}</h3>
+          <p class="body">{p.body}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="flow mono" data-reveal aria-hidden="true">
+      <span>brief</span><i>→</i><span>agent</span><i>→</i><span>tests + CI</span><i>→</i><span>review diff</span><i>→</i><span>ship</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .card {
+    --mx: 50%;
+    --my: 50%;
+    position: relative;
+    padding: 26px 26px 24px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background:
+      radial-gradient(360px circle at var(--mx) var(--my), var(--glow), transparent 60%),
+      var(--surface);
+    transition: border-color 0.3s;
+  }
+  .card:hover {
+    border-color: var(--line-strong);
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 14px;
+    font-size: 12px;
+  }
+  .n {
+    color: var(--faint);
+  }
+  .k {
+    color: var(--accent);
+  }
+  h3 {
+    margin: 0 0 10px;
+    font-size: clamp(20px, 2vw, 24px);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .body {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15.5px;
+  }
+  .flow {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .flow span {
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+  }
+  .flow i {
+    font-style: normal;
+    color: var(--accent);
+  }
+  @media (max-width: 760px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -30,14 +30,14 @@ const d = p.data;
 >
   <article style={`--acc:${d.accent}`}>
     <header class="container head">
-      <a href="/#work" class="back">← All work</a>
-      <p class="meta" data-reveal>{d.year}{d.role ? ` · ${d.role}` : ''}</p>
+      <a href="/#work" class="back mono">← cd ..</a>
+      <p class="meta mono" data-reveal>{d.year}{d.role ? ` · ${d.role}` : ''}</p>
       <h1 transition:name={`title-${p.id}`}>{d.title}</h1>
       <p class="tag" data-reveal style="--i:1">{d.tagline}</p>
       <div class="ctas" data-reveal style="--i:2">
-        {d.live && <a class="btn primary" href={d.live} target="_blank" rel="noopener">Open live <span class="arrow">↗</span></a>}
-        {d.repo && <a class="btn" href={d.repo} target="_blank" rel="noopener">Source code <span class="arrow">↗</span></a>}
-        {!d.live && !d.repo && <span class="tag">{d.status === 'private' ? 'code is private' : 'not public yet'}</span>}
+        {d.live && <a class="btn primary" href={d.live} target="_blank" rel="noopener" data-magnetic>Open live <span class="arrow">↗</span></a>}
+        {d.repo && <a class="btn" href={d.repo} target="_blank" rel="noopener" data-magnetic>Source code <span class="arrow">↗</span></a>}
+        {!d.live && !d.repo && <span class="chip">{d.status === 'private' ? 'code is private' : 'not public yet'}</span>}
       </div>
       {d.stats.length > 0 && (
         <ul class="stats">
@@ -54,16 +54,16 @@ const d = p.data;
     )}
     <div class="container body">
       <aside data-reveal>
-        <p class="k">Stack</p>
-        <ul>{d.stack.map((s) => <li class="tag">{s}</li>)}</ul>
-        <p class="k">Status</p>
+        <p class="mono k">stack</p>
+        <ul>{d.stack.map((s) => <li class="chip">{s}</li>)}</ul>
+        <p class="mono k">status</p>
         <p class="v2">{d.status}</p>
       </aside>
       <div class="prose" data-reveal style="--i:1"><Content /></div>
     </div>
     <nav class="container next">
-      <a href={`/projects/${next.id}/`}>
-        <span>Next project →</span>
+      <a href={`/projects/${next.id}/`} data-spotlight>
+        <span class="mono">next project →</span>
         <strong>{next.data.title}</strong>
       </a>
     </nav>
@@ -92,11 +92,9 @@ const d = p.data;
     margin: 0 0 12px;
   }
   h1 {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(48px, 8vw, 96px);
-    letter-spacing: -0.02em;
-    line-height: 1;
+    font-size: clamp(48px, 9vw, 110px);
+    letter-spacing: -0.055em;
+    line-height: 0.95;
     margin: 0 0 24px;
   }
   .tag {
@@ -125,10 +123,10 @@ const d = p.data;
     gap: 6px;
   }
   .v {
-    font-family: var(--font-serif);
-    font-size: clamp(36px, 4vw, 52px);
-    line-height: 1;
-    color: var(--text);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 650;
+    letter-spacing: -0.04em;
+    color: var(--acc);
   }
   .l {
     color: var(--muted);
@@ -136,7 +134,7 @@ const d = p.data;
   }
   .shot {
     display: block;
-    border-radius: 10px;
+    border-radius: 18px;
     overflow: hidden;
     border: 1px solid var(--line-strong);
     box-shadow: var(--shadow);
@@ -194,9 +192,9 @@ const d = p.data;
     flex-wrap: wrap;
     gap: 12px;
     padding: 32px;
-    border-radius: 10px;
+    border-radius: 20px;
     border: 1px solid var(--line);
-    background: var(--surface);
+    background: radial-gradient(400px circle at var(--mx) var(--my), var(--glow), transparent 60%), var(--surface);
     transition: border-color 0.3s;
   }
   .next a:hover {
@@ -207,9 +205,8 @@ const d = p.data;
     font-size: 13px;
   }
   .next strong {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(26px, 3vw, 38px);
+    font-size: clamp(24px, 3vw, 36px);
+    letter-spacing: -0.03em;
   }
   @media (max-width: 800px) {
     .body {

@@ -8,7 +8,7 @@ year: '2023 - 2024'
 role: Software Development Intern, A*STAR
 status: private
 stack: [Angular, TypeScript, C#, .NET, Swagger, Postman]
-accent: '#1f4fd1'
+accent: '#f0abfc'
 stats:
   - { value: '10', label: 'months on the team' }
   - { value: 'Full', label: 'stack: UI to API' }

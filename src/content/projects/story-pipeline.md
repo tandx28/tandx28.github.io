@@ -8,7 +8,7 @@ year: '2026'
 role: Solo developer
 status: private
 stack: [Python, Ollama, Qwen, FLUX, FFmpeg, YouTube Data API]
-accent: '#1f4fd1'
+accent: '#c084fc'
 stats:
   - { value: '$0', label: 'per run in API fees' }
   - { value: '5', label: 'stages, each checkable' }

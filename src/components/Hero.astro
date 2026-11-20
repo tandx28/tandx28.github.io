@@ -1,122 +1,314 @@
 ---
-import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import { profile } from '../data/profile';
-import headshot from '../assets/photos/headshot.jpg';
+
+const projects = (await getCollection('projects'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((p) => ({ id: p.id, title: p.data.title, tagline: p.data.short, live: p.data.live ?? p.data.play ?? null, featured: p.data.tier === 'featured' }));
+
+// Data the interactive terminal answers from. Kept here so the copy matches
+// the rest of the page.
+const termData = {
+  name: profile.name,
+  email: profile.email,
+  github: profile.github,
+  linkedin: profile.linkedin,
+  resume: profile.resume,
+  projects,
+};
 ---
 
-<header class="hero container" id="top">
-  <div class="grid">
-  <div class="copy">
-  <p class="hello" data-reveal>Hello, I'm</p>
-  <h1 data-reveal style="--i:1">Tan De Xun.</h1>
-  <p class="intro" data-reveal style="--i:2">
-    I build software with AI, and I'm curious about how far it can go. I study Computer Science at
-    <strong>NUS</strong>, interned as a full-stack developer at <strong>A*STAR</strong>, and spent two years
-    blocking scam websites with the <strong>Singapore Police Force</strong>.
-  </p>
-  <p class="intro sub" data-reveal style="--i:3">
-    Most days that means giving AI agents a clear brief, spending tokens where they matter, and checking
-    everything they write with tests before it ships. When a new tool or technology comes out, I learn it by
-    building something real with it.
-  </p>
-  <div class="ctas" data-reveal style="--i:4">
-    <a class="btn primary" href="#work">See my work</a>
-    <a class="btn" href={profile.resume} target="_blank" rel="noopener">Résumé (PDF)</a>
-    <a class="btn" href={`mailto:${profile.email}`}>Email me</a>
+<section class="hero" id="top">
+  <div class="container grid">
+    <div class="copy">
+      <p class="status mono" data-reveal>
+        <span class="dot"></span> Open to Summer 2027 internships
+      </p>
+      <h1 data-reveal style="--i:1">
+        <span class="hi mono">Hi, I'm</span>
+        <span class="name" data-scramble>{profile.name}</span>
+      </h1>
+      <p class="sub" data-reveal style="--i:2">
+        I build software <span class="sr-only">with AI: full-stack apps, agent workflows, automations and new tech,</span><span class="rot" aria-hidden="true" data-rotate='["with AI","with agents","that runs itself","with new tech"]'>with AI</span>,
+        <br />and test everything it writes.
+      </p>
+      <div class="ctas" data-reveal style="--i:3">
+        <a class="btn primary" href="#work" data-magnetic>See my work <span class="arrow">→</span></a>
+        <a class="btn" href={profile.resume} target="_blank" rel="noopener" data-magnetic>Résumé <span class="arrow">↗</span></a>
+      </div>
+      <ul class="meta mono" data-reveal style="--i:4">
+        <li><span>loc</span> {profile.location}</li>
+        <li><span>now</span> CS @ NUS, Year 1</li>
+        <li><span>into</span> AI-assisted SWE · agents · cloud · new tech</li>
+      </ul>
+    </div>
+
+    <div class="term" data-reveal style="--i:2" data-tilt>
+      <div class="chrome">
+        <span></span><span></span><span></span>
+        <p class="mono">dexun@portfolio: ~</p>
+      </div>
+      <div class="screen mono" data-terminal tabindex="0" aria-label="Interactive terminal. Type help and press Enter.">
+        <div class="out" aria-live="polite"></div>
+        <form class="line" autocomplete="off">
+          <label class="ps1" for="term-in">❯</label>
+          <input id="term-in" type="text" spellcheck="false" autocapitalize="off" aria-label="Terminal input" />
+        </form>
+      </div>
+      <script type="application/json" id="term-data" set:html={JSON.stringify(termData)} />
+    </div>
   </div>
-  <ul class="facts" data-reveal style="--i:5">
-    <li><span>Based in</span>Singapore</li>
-    <li><span>Studying</span>Computer Science, NUS (Year 1)</li>
-    <li><span>Looking for</span>Summer 2027 SWE internships</li>
-  </ul>
-  </div>
-  <figure class="portrait" data-reveal style="--i:2">
-    <Image src={headshot} alt="Tan De Xun smiling in an open-plan office" widths={[320, 480, 640]} sizes="(max-width: 860px) 60vw, 320px" format="webp" quality={80} loading="eager" fetchpriority="high" class="portrait-img" />
-  </figure>
-  </div>
-</header>
+  <a class="scroll mono" href="#about" aria-label="Scroll to about">
+    <span>scroll</span><i></i>
+  </a>
+</section>
 
 <style>
   .hero {
-    padding-top: clamp(120px, 16vw, 180px);
-    padding-bottom: clamp(56px, 8vw, 96px);
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding: 120px 0 90px;
   }
   .grid {
     display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: clamp(32px, 6vw, 72px);
-    align-items: start;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
   }
-  .copy {
-    min-width: 0;
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 7px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    margin: 0 0 28px;
   }
-  .portrait {
-    margin: 52px 0 0;
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
+    animation: ping 2s infinite;
   }
-  .portrait :global(.portrait-img) {
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    object-position: 45% 30%;
-    border-radius: 10px;
-  }
-  @media (max-width: 860px) {
-    .grid {
-      grid-template-columns: 1fr;
+  @keyframes ping {
+    70% {
+      box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
     }
-    .portrait {
-      order: -1;
-      margin: 0;
-      width: min(220px, 60vw);
+    100% {
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
     }
-  }
-  .hello {
-    margin: 0 0 6px;
-    font-size: 16px;
-    color: var(--faint);
   }
   h1 {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(56px, 10vw, 120px);
+    margin: 0;
     line-height: 0.95;
-    letter-spacing: -0.02em;
-    margin: 0 0 32px;
   }
-  .intro {
-    font-size: clamp(19px, 2.1vw, 23px);
-    line-height: 1.5;
-    max-width: 34em;
-    margin: 0 0 18px;
+  .hi {
+    display: block;
+    font-size: clamp(15px, 1.6vw, 18px);
+    font-weight: 400;
+    color: var(--accent);
+    margin-bottom: 14px;
   }
-  .intro strong {
+  .name {
+    display: block;
+    font-size: clamp(52px, 9vw, 112px);
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    background: linear-gradient(180deg, var(--text) 40%, color-mix(in srgb, var(--text) 45%, transparent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0.08em;
+  }
+  .sub {
+    font-size: clamp(19px, 2.2vw, 26px);
+    line-height: 1.4;
+    color: var(--muted);
+    margin: 26px 0 34px;
+    letter-spacing: -0.01em;
+  }
+  .sub strong {
+    color: var(--text);
     font-weight: 600;
   }
-  .intro.sub {
-    color: var(--muted);
-    font-size: clamp(17px, 1.7vw, 19px);
+  .rot {
+    color: var(--text);
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent);
+    white-space: nowrap;
   }
   .ctas {
     display: flex;
+    gap: 12px;
     flex-wrap: wrap;
-    gap: 10px;
-    margin: 34px 0 44px;
   }
-  .facts {
+  .meta {
     list-style: none;
-    padding: 18px 0 0;
-    margin: 0;
+    padding: 0;
+    margin: 40px 0 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px 40px;
-    border-top: 1px solid var(--line);
-    font-size: 15px;
+    gap: 8px 26px;
+    font-size: 13px;
+    color: var(--text);
   }
-  .facts span {
-    display: block;
+  .meta span {
+    color: var(--faint);
+    margin-right: 6px;
+  }
+
+  /* Terminal window */
+  .term {
+    border-radius: 16px;
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--surface-solid) 86%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.6s var(--ease);
+  }
+  .chrome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg-2) 70%, transparent);
+  }
+  .chrome span {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+  .chrome span:nth-child(1) {
+    background: #ff5f57;
+  }
+  .chrome span:nth-child(2) {
+    background: #febc2e;
+  }
+  .chrome span:nth-child(3) {
+    background: #28c840;
+  }
+  .chrome p {
+    margin: 0 auto;
     font-size: 12px;
     color: var(--faint);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    transform: translateX(-20px);
+  }
+  .screen {
+    height: 380px;
+    overflow-y: auto;
+    padding: 18px 18px 14px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    cursor: text;
+    scrollbar-width: thin;
+  }
+  .screen :global(.cmd) {
+    color: var(--text);
+  }
+  .screen :global(.cmd::before) {
+    content: '❯ ';
+    color: var(--accent);
+  }
+  .screen :global(.dim) {
+    color: var(--muted);
+  }
+  .screen :global(.acc) {
+    color: var(--accent);
+  }
+  .screen :global(.acc2) {
+    color: var(--accent-2);
+  }
+  .screen :global(.warn) {
+    color: var(--warn);
+  }
+  .screen :global(a) {
+    color: var(--accent-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .screen :global(pre) {
+    margin: 0;
+    font: inherit;
+    white-space: pre-wrap;
+  }
+  .line {
+    display: flex;
+    gap: 8px;
+  }
+  .ps1 {
+    color: var(--accent);
+  }
+  input {
+    flex: 1;
+    min-width: 0;
+    background: none;
+    border: 0;
+    outline: 0;
+    color: var(--text);
+    font: inherit;
+    caret-color: var(--accent);
+  }
+
+  .scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--faint);
+    letter-spacing: 0.1em;
+  }
+  .scroll i {
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(var(--accent), transparent);
+    animation: drop 2s var(--ease) infinite;
+    transform-origin: top;
+  }
+  @keyframes drop {
+    0% {
+      transform: scaleY(0);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 0;
+    }
+  }
+  @media (max-width: 520px) {
+    .screen {
+      font-size: 12.5px;
+    }
+    .screen :global(.ls-d) {
+      display: none;
+    }
+  }
+  @media (max-width: 920px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .screen {
+      height: 300px;
+    }
+    .scroll {
+      display: none;
+    }
   }
 </style>

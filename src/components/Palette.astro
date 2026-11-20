@@ -8,15 +8,17 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 
 type Item = { group: string; label: string; hint: string; href?: string; action?: string; external?: boolean };
 const items: Item[] = [
-  { group: 'go to', label: 'How I work with AI', hint: '#ai', href: '/#ai' },
+  { group: 'go to', label: 'About', hint: '#about', href: '/#about' },
+  { group: 'go to', label: 'How I build with AI', hint: '#ai', href: '/#ai' },
   { group: 'go to', label: 'Work', hint: '#work', href: '/#work' },
-  { group: 'go to', label: 'Experiments', hint: '#experiments', href: '/#experiments' },
-  { group: 'go to', label: 'Experience', hint: '#experience', href: '/#experience' },
-  { group: 'go to', label: 'Press', hint: '#press', href: '/#press' },
+  { group: 'go to', label: 'Journey', hint: '#journey', href: '/#journey' },
+  { group: 'go to', label: 'Stack', hint: '#stack', href: '/#stack' },
+  { group: 'go to', label: 'Community', hint: '#community', href: '/#community' },
   { group: 'go to', label: 'Contact', hint: '#contact', href: '/#contact' },
   ...projects
     .filter((p) => p.data.tier === 'featured')
     .map((p) => ({ group: 'projects', label: p.data.title, hint: p.data.year, href: `/projects/${p.id}/` })),
+  { group: 'go to', label: 'Lab', hint: '#lab', href: '/#lab' },
   ...projects
     .filter((p) => p.data.live || p.data.play)
     .map((p) => ({ group: 'play / try', label: `Open ${p.data.title}`, hint: p.data.kind === 'film' ? 'watch ↗' : 'live ↗', href: p.data.live ?? p.data.play, external: true })),
@@ -70,7 +72,8 @@ const items: Item[] = [
   .scrim {
     position: absolute;
     inset: 0;
-    background: rgba(20, 18, 14, 0.35);
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
     animation: fade 0.25s var(--ease);
   }
   .panel {
