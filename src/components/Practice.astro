@@ -1,0 +1,102 @@
+---
+import { practices, toolbox } from '../data/profile';
+---
+
+<section id="ai">
+  <div class="container">
+    <div class="sec-head">
+      <p class="label">How I work</p>
+      <div>
+        <h2 class="h2">Building with AI, on purpose.</h2>
+        <p class="lede">
+          AI writes a lot of my code. My job is to decide what gets built, give the models the right context,
+          keep the cost sensible and make sure what comes back actually works. Four habits do most of that.
+        </p>
+      </div>
+    </div>
+
+    <ol class="practices">
+      {practices.map((p, i) => (
+        <li data-reveal style={`--i:${i % 2}`}>
+          <span class="n mono">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{p.title}</h3>
+          <p>{p.body}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="tools" data-reveal>
+      {toolbox.map((g) => (
+        <div>
+          <p class="g">{g.group}</p>
+          <p class="items">{g.items.join(' · ')}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .practices {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+  .practices li {
+    padding: 28px 28px 28px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .practices li:nth-child(even) {
+    padding: 28px 0 28px 28px;
+    border-left: 1px solid var(--line);
+  }
+  .n {
+    font-size: 12px;
+    color: var(--accent);
+  }
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 6px 0 8px;
+  }
+  .practices p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 16px;
+  }
+  .tools {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .g {
+    margin: 0 0 4px;
+    font-size: 12px;
+    color: var(--faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .items {
+    margin: 0;
+    font-size: 15px;
+  }
+  @media (max-width: 860px) {
+    .practices {
+      grid-template-columns: 1fr;
+    }
+    .practices li,
+    .practices li:nth-child(even) {
+      padding: 24px 0;
+      border-left: 0;
+    }
+    .tools {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

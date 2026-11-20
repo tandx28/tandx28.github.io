@@ -3,12 +3,12 @@ title: School website revamp
 short: 'school website revamp'
 tagline: Leading platform and quality for a student team rebuilding a school's website with SiloamXperience.
 tier: featured
-order: 4
+order: 5
 year: '2026'
 role: Platform & Quality Lead
 status: in progress
 stack: [WordPress, PHP, CSS, GitHub Actions, Next.js, Prisma]
-accent: '#fbbf24'
+accent: '#1f4fd1'
 stats:
   - { value: '3', label: 'people on my team' }
   - { value: 'QA', label: 'reviews, checks, CI' }

@@ -4,7 +4,6 @@ import { ClientRouter } from 'astro:transitions';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Palette from '../components/Palette.astro';
-import Backdrop from '../components/Backdrop.astro';
 import { profile } from '../data/profile';
 
 interface Props {
@@ -32,7 +31,7 @@ const ogImage = new URL('/og.png', Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#07090c" />
+    <meta name="theme-color" content="#f7f5f0" />
     <meta name="author" content={profile.name} />
 
     <meta property="og:type" content="website" />
@@ -48,15 +47,15 @@ const ogImage = new URL('/og.png', Astro.site);
     <link
       rel="preload"
       as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap"
     />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap"
       media="print"
       onload="this.media='all'"
     />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" /></noscript>
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta property="og:site_name" content={`${profile.name} portfolio`} />
     <meta property="og:locale" content="en_SG" />
@@ -80,7 +79,7 @@ const ogImage = new URL('/og.png', Astro.site);
           address: { '@type': 'PostalAddress', addressCountry: 'SG', addressLocality: 'Singapore' },
           affiliation: { '@type': 'CollegeOrUniversity', name: 'National University of Singapore' },
           alumniOf: { '@type': 'CollegeOrUniversity', name: 'Singapore Polytechnic' },
-          knowsAbout: ['Software engineering', 'TypeScript', 'Angular', '.NET', 'Three.js', 'Cloud computing', 'AI-assisted development', 'Cybersecurity'],
+          knowsAbout: ['Software engineering', 'AI-assisted development', 'AI agents', 'Prompt engineering', 'TypeScript', 'Angular', '.NET', 'Cloud computing', 'Cybersecurity'],
           sameAs: [profile.github, profile.linkedin],
         },
         {
@@ -116,8 +115,6 @@ const ogImage = new URL('/og.png', Astro.site);
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <Backdrop />
-    <div class="progress" aria-hidden="true"></div>
     <Nav />
     <main id="main">
       <slot />
@@ -131,15 +128,3 @@ const ogImage = new URL('/og.png', Astro.site);
   </body>
 </html>
 
-<style is:global>
-  .progress {
-    position: fixed;
-    inset: 0 0 auto 0;
-    height: 2px;
-    z-index: 60;
-    transform-origin: 0 50%;
-    transform: scaleX(var(--progress, 0));
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
-    pointer-events: none;
-  }
-</style>

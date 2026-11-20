@@ -3,7 +3,7 @@ title: Settle
 short: 'game-night settle-up app'
 tagline: Settle up after mahjong, poker or card nights in seconds, with shared live tables and PayNow QR codes made on the device.
 tier: featured
-order: 2
+order: 1
 year: '2024 - 2026'
 role: Solo developer
 status: live
@@ -11,7 +11,7 @@ stack: [JavaScript, Node.js, Webpack, Redis, Vercel, node:test]
 live: https://settlelah-sg.vercel.app
 repo: https://github.com/tandx28/Payment_Calculator
 cover: ../../assets/shots/settle.jpg
-accent: '#a3e635'
+accent: '#1f4fd1'
 stats:
   - { value: '0', label: 'cents lost to rounding' }
   - { value: '24h', label: 'shared table lifetime' }

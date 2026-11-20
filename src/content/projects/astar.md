@@ -3,12 +3,12 @@ title: Last-mile logistics platform
 short: 'logistics platform @ A*STAR'
 tagline: Frontend features and .NET APIs for a continuous last-mile logistics platform during my internship at A*STAR.
 tier: featured
-order: 3
+order: 4
 year: '2023 - 2024'
 role: Software Development Intern, A*STAR
 status: private
 stack: [Angular, TypeScript, C#, .NET, Swagger, Postman]
-accent: '#f0abfc'
+accent: '#1f4fd1'
 stats:
   - { value: '10', label: 'months on the team' }
   - { value: 'Full', label: 'stack: UI to API' }

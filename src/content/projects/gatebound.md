@@ -1,17 +1,17 @@
 ---
 title: Gatebound
 short: '3D browser action game'
-tagline: A 3D browser action game about the weakest hunter in the city, with 640+ tests and a bot that plays it to keep the difficulty honest.
+tagline: A 3D browser game I built by directing AI agents, kept honest by 640+ tests, CI and a bot that plays every level to measure the difficulty.
 tier: featured
-order: 1
+order: 3
 year: '2026'
-role: Solo developer
+role: Solo, built with Claude Code
 status: live
 stack: [TypeScript, Three.js, Vite, Vitest, Web Audio, GitHub Actions]
 live: https://tandx28.github.io/gatebound/
 repo: https://github.com/tandx28/gatebound
 cover: ../../assets/shots/gatebound.jpg
-accent: '#60a5fa'
+accent: '#1f4fd1'
 stats:
   - { value: '27k', label: 'lines of TypeScript' }
   - { value: '640+', label: 'unit tests' }
