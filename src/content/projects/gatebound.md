@@ -1,5 +1,5 @@
 ---
-title: Gatebound
+title: Untitled Levelling Game
 short: '3D browser action game'
 tagline: A 3D browser game I built while exploring AI pair programming, kept honest by 640+ unit tests, CI and a bot that plays every level to measure the difficulty.
 tier: featured
@@ -24,8 +24,9 @@ A top-down 3D dungeon crawler that runs in the browser. You play the lowest-rank
 hunter in the city of Veyra, who wakes up with a system only they can see. Gates
 of rank E to S open onto generated rooms that end in a boss with phases. You
 level to 60, collect gear in six rarities, choose one of four classes and raise
-an army of "echoes" from what you defeat. The world, characters and story are
-all original.
+an army of "echoes" from what you defeat. It is inspired by Sung Jin-Woo's
+dungeon crawling in *Solo Leveling*, while the world, characters and story are
+all original. The game was called Gatebound until November 2026.
 
 ## How it is built
 

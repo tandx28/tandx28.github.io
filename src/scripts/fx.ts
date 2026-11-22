@@ -614,11 +614,11 @@ function initTerminal() {
       },
     },
     play: {
-      help: 'play gatebound in a new tab',
+      help: 'play Untitled Levelling Game in a new tab',
       run: () => {
         const g = data.projects.find((p) => p.id === 'gatebound');
         if (g?.live) window.open(g.live, '_blank', 'noopener');
-        return 'launching <span class="acc">Gatebound</span> ↗  good luck, hunter.';
+        return 'launching <span class="acc">Untitled Levelling Game</span> ↗  good luck, hunter.';
       },
     },
     lab: {
