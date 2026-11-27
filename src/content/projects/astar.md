@@ -1,5 +1,6 @@
 ---
 title: Last-mile logistics platform
+seoTitle: 'Last-mile logistics platform at A*STAR'
 short: 'logistics platform @ A*STAR'
 tagline: Frontend features and .NET APIs for a continuous last-mile logistics platform during my internship at A*STAR.
 tier: featured

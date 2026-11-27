@@ -1,5 +1,5 @@
-<!doctype html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="description" content="A first-person wave shooter in an abandoned foundry, with procedural textures and sound. A 3D browser game built with AI by Tan De Xun."><link rel="canonical" href="https://tandx28.github.io/lab/cinder-yard/"><meta property="og:type" content="website"><meta property="og:title" content="Cinder Yard | Tan De Xun"><meta property="og:description" content="A first-person wave shooter in an abandoned foundry, with procedural textures and sound. A 3D browser game built with AI by Tan De Xun."><meta property="og:url" content="https://tandx28.github.io/lab/cinder-yard/"><meta property="og:image" content="https://tandx28.github.io/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="author" content="Tan De Xun"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Cinder Yard</title>
+<!doctype html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="description" content="A first-person wave shooter in an abandoned foundry, with procedural textures and sound. A 3D browser game built with AI by Tan De Xun."><link rel="canonical" href="https://tandx28.github.io/lab/cinder-yard/"><meta property="og:type" content="website"><meta property="og:title" content="Cinder Yard: 3D wave shooter browser game | Tan De Xun"><meta property="og:description" content="A first-person wave shooter in an abandoned foundry, with procedural textures and sound. A 3D browser game built with AI by Tan De Xun."><meta property="og:url" content="https://tandx28.github.io/lab/cinder-yard/"><meta property="og:image" content="https://tandx28.github.io/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="author" content="Tan De Xun"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Cinder Yard: 3D wave shooter browser game | Tan De Xun</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Share+Tech+Mono&display=swap">
 <style>
@@ -472,7 +472,7 @@ function cv(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;r
 function grain(ctx,w,h,amt){const id=ctx.getImageData(0,0,w,h),d=id.data;for(let i=0;i<d.length;i+=4){const n=(Math.random()-.5)*amt;d[i]+=n;d[i+1]+=n;d[i+2]+=n;}ctx.putImageData(id,0,0);}
 function blotch(ctx,w,h,n,col,rmin,rmax,a){for(let i=0;i<n;i++){const x=Math.random()*w,y=Math.random()*h,r=rand(rmin,rmax),g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,col.replace('A',a));g.addColorStop(1,col.replace('A','0'));ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);}}
 function normalFrom(hc,str){
-  const w=hc.width,h=hc.height,src=hc.getContext('2d').getImageData(0,0,w,h).data,out=cv(w,h),o=out.getContext('2d'),id=o.createImageData(w,h),d=id.data;
+  const w=hc.width,h=hc.height,src=hc.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h).data,out=cv(w,h),o=out.getContext('2d',{willReadFrequently:true}),id=o.createImageData(w,h),d=id.data;
   const at=(x,y)=>src[(((y+h)%h)*w+((x+w)%w))*4];
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){
     const dx=(at(x+1,y)-at(x-1,y))/255*str,dy=(at(x,y+1)-at(x,y-1))/255*str,l=1/Math.hypot(dx,dy,1),i=(y*w+x)*4;
@@ -483,7 +483,7 @@ function normalFrom(hc,str){
 function tex(c,srgb,rx,ry){const t=new T.CanvasTexture(c);if(srgb)t.encoding=T.sRGBEncoding;t.anisotropy=ANISO;if(rx){t.wrapS=t.wrapT=T.RepeatWrapping;t.repeat.set(rx,ry);}return t;}
 
 function wallTex(){
-  const w=256,h=896,c=cv(w,h),x=c.getContext('2d'),hc=cv(w,h),y=hc.getContext('2d'),ec=cv(w,h),e=ec.getContext('2d');
+  const w=256,h=896,c=cv(w,h),x=c.getContext('2d',{willReadFrequently:true}),hc=cv(w,h),y=hc.getContext('2d',{willReadFrequently:true}),ec=cv(w,h),e=ec.getContext('2d',{willReadFrequently:true});
   const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#2c363c');g.addColorStop(.6,'#3b464c');g.addColorStop(1,'#272e32');x.fillStyle=g;x.fillRect(0,0,w,h);
   blotch(x,w,h,26,'rgba(10,14,16,A)',30,120,'.35');blotch(x,w,h,14,'rgba(120,80,40,A)',20,70,'.18');
   y.fillStyle='#808080';y.fillRect(0,0,w,h);
@@ -508,7 +508,7 @@ function wallTex(){
   return {map:tex(c,true),normalMap:tex(normalFrom(hc,3.2)),emissiveMap:tex(ec,true)};
 }
 function floorTex(){
-  const s=512,c=cv(s,s),x=c.getContext('2d'),hc=cv(s,s),y=hc.getContext('2d');
+  const s=512,c=cv(s,s),x=c.getContext('2d',{willReadFrequently:true}),hc=cv(s,s),y=hc.getContext('2d',{willReadFrequently:true});
   x.fillStyle='#34393b';x.fillRect(0,0,s,s);y.fillStyle='#8a8a8a';y.fillRect(0,0,s,s);
   blotch(x,s,s,40,'rgba(12,14,15,A)',30,140,'.4');blotch(x,s,s,18,'rgba(90,70,45,A)',20,80,'.16');blotch(x,s,s,10,'rgba(120,130,135,A)',20,60,'.1');
   blotch(y,s,s,60,'rgba(40,40,40,A)',4,18,'.5');
@@ -525,7 +525,7 @@ function floorTex(){
   return {map:tex(c,true,rx,ry),normalMap:tex(normalFrom(hc,2.6),false,rx,ry)};
 }
 function crateTex(){
-  const s=256,c=cv(s,s),x=c.getContext('2d'),hc=cv(s,s),y=hc.getContext('2d');
+  const s=256,c=cv(s,s),x=c.getContext('2d',{willReadFrequently:true}),hc=cv(s,s),y=hc.getContext('2d',{willReadFrequently:true});
   x.fillStyle='#b4b4b4';x.fillRect(0,0,s,s);y.fillStyle='#808080';y.fillRect(0,0,s,s);
   for(let k=0;k<16;k++){x.fillStyle=k%2?'rgba(0,0,0,.2)':'rgba(255,255,255,.07)';x.fillRect(k*16,0,8,s);y.fillStyle=k%2?'#505050':'#b0b0b0';y.fillRect(k*16,0,8,s);}
   x.fillStyle='#3a3d40';x.fillRect(0,0,s,16);x.fillRect(0,s-16,s,16);x.fillRect(0,0,16,s);x.fillRect(s-16,0,16,s);
@@ -539,7 +539,7 @@ function crateTex(){
   return {map:tex(c,true),normalMap:tex(normalFrom(hc,2.4))};
 }
 function barrierTex(){
-  const w=256,h=128,c=cv(w,h),x=c.getContext('2d'),hc=cv(w,h),y=hc.getContext('2d');
+  const w=256,h=128,c=cv(w,h),x=c.getContext('2d',{willReadFrequently:true}),hc=cv(w,h),y=hc.getContext('2d',{willReadFrequently:true});
   x.fillStyle='#8b8f8c';x.fillRect(0,0,w,h);y.fillStyle='#808080';y.fillRect(0,0,w,h);
   blotch(x,w,h,24,'rgba(40,40,38,A)',8,40,'.4');blotch(y,w,h,50,'rgba(30,30,30,A)',3,12,'.6');
   x.save();x.beginPath();x.rect(0,10,w,30);x.clip();x.fillStyle='#d79a22';x.fillRect(0,10,w,30);x.fillStyle='#17130d';for(let k=-1;k<10;k++){x.beginPath();x.moveTo(k*36,40);x.lineTo(k*36+18,40);x.lineTo(k*36+48,10);x.lineTo(k*36+30,10);x.fill();}x.restore();
@@ -548,7 +548,7 @@ function barrierTex(){
   return {map:tex(c,true),normalMap:tex(normalFrom(hc,2.2))};
 }
 function plateTex(){
-  const s=256,c=cv(s,s),x=c.getContext('2d'),hc=cv(s,s),y=hc.getContext('2d');
+  const s=256,c=cv(s,s),x=c.getContext('2d',{willReadFrequently:true}),hc=cv(s,s),y=hc.getContext('2d',{willReadFrequently:true});
   x.fillStyle='#3f484d';x.fillRect(0,0,s,s);y.fillStyle='#707070';y.fillRect(0,0,s,s);
   for(let r=0;r<16;r++)for(let q=0;q<16;q++){const px=q*16+8,py=r*16+8,a=(r+q)%2?.7:-.7;
     x.save();x.translate(px,py);x.rotate(a);x.fillStyle='rgba(255,255,255,.1)';x.fillRect(-5,-1.5,10,3);x.restore();
@@ -558,13 +558,13 @@ function plateTex(){
   return {map:tex(c,true),normalMap:tex(normalFrom(hc,2.8))};
 }
 function glowTex(star){
-  const s=128,c=cv(s,s),x=c.getContext('2d'),g=x.createRadialGradient(64,64,0,64,64,64);
+  const s=128,c=cv(s,s),x=c.getContext('2d',{willReadFrequently:true}),g=x.createRadialGradient(64,64,0,64,64,64);
   g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,220,160,.8)');g.addColorStop(1,'rgba(255,160,60,0)');x.fillStyle=g;x.fillRect(0,0,s,s);
   if(star){x.globalCompositeOperation='lighter';x.translate(64,64);for(let k=0;k<6;k++){x.rotate(Math.PI/3+rand(-.2,.2));const lg=x.createLinearGradient(0,0,62,0);lg.addColorStop(0,'rgba(255,255,230,.9)');lg.addColorStop(1,'rgba(255,170,60,0)');x.fillStyle=lg;x.beginPath();x.moveTo(0,-7);x.lineTo(62,0);x.lineTo(0,7);x.fill();}}
   return tex(c,true);
 }
 function holeTex(){
-  const s=64,c=cv(s,s),x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);
+  const s=64,c=cv(s,s),x=c.getContext('2d',{willReadFrequently:true}),g=x.createRadialGradient(32,32,0,32,32,32);
   g.addColorStop(0,'rgba(0,0,0,.95)');g.addColorStop(.22,'rgba(8,6,4,.9)');g.addColorStop(.4,'rgba(30,22,14,.45)');g.addColorStop(1,'rgba(30,22,14,0)');x.fillStyle=g;x.fillRect(0,0,s,s);
   x.strokeStyle='rgba(200,200,200,.35)';x.beginPath();x.arc(32,32,8,0,7);x.stroke();return tex(c,true);
 }
@@ -1497,7 +1497,7 @@ function updateGun(dt){
   drawAmmo();
 }
 const mapS=cv(144,120),mapX=$('map').getContext('2d');
-function drawMapStatic(){const x=mapS.getContext('2d'),s=4;x.fillStyle='#070c0e';x.fillRect(0,0,144,120);
+function drawMapStatic(){const x=mapS.getContext('2d',{willReadFrequently:true}),s=4;x.fillStyle='#070c0e';x.fillRect(0,0,144,120);
  for(let cz=0;cz<H;cz++)for(let cx=0;cx<W;cx++){const ch=G[cz*W+cx];x.fillStyle=ch==='#'?'#3d5058':ch==='c'?'#7a5a24':ch==='x'?'#a03a22':ch==='h'?'#5a2a12':ch==='b'?'#6f7572':ch==='P'?'#1c3238':'<>^v'.includes(ch)?'#16272c':'#0b1316';x.fillRect(cx*s,cz*s,s,s);}}
 drawMapStatic();
 let mapT=0;

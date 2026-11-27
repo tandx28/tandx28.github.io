@@ -12,12 +12,15 @@ interface Props {
   description?: string;
   /** Extra JSON-LD for this page, e.g. a project's SoftwareApplication. */
   schema?: Record<string, unknown>;
+  /** Keep this page out of search results (the 404 page). */
+  noindex?: boolean;
 }
 
 const {
   title = `${profile.name} | Software Engineer, NUS Computer Science`,
-  description = profile.blurb,
+  description = profile.summary,
   schema,
+  noindex = false,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.png', Astro.site);
@@ -30,7 +33,7 @@ const ogImage = new URL('/og.png', Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {!noindex && <link rel="canonical" href={canonical} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#07090c" />
     <meta name="author" content={profile.name} />
@@ -57,7 +60,7 @@ const ogImage = new URL('/og.png', Astro.site);
       onload="this.media='all'"
     />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
     <!-- Security: only this site, Google Fonts and inline theme/JSON-LD scripts may load. GitHub Pages cannot send headers, so this is set here. -->
     <meta
       http-equiv="Content-Security-Policy"

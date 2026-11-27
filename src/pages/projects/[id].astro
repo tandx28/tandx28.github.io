@@ -16,13 +16,13 @@ const d = p.data;
 ---
 
 <Base
-  title={`${d.title} | Tan De Xun`}
+  title={`${d.seoTitle ?? `${d.title}: ${d.short}`} | Tan De Xun`}
   description={d.tagline}
   schema={{
     '@type': d.live ? 'SoftwareApplication' : 'CreativeWork',
     name: d.title,
     description: d.tagline,
-    ...(d.live ? { url: d.live, applicationCategory: p.id === 'gatebound' ? 'GameApplication' : 'FinanceApplication', operatingSystem: 'Web browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'SGD' } } : {}),
+    ...(d.live ? { url: d.live, applicationCategory: p.id === 'gatebound' ? 'GameApplication' : p.id === 'settle' ? 'FinanceApplication' : 'WebApplication', operatingSystem: 'Web browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'SGD' } } : {}),
     ...(d.repo ? { codeRepository: d.repo } : {}),
     author: { '@id': new URL('/#person', Astro.site).href },
     keywords: d.stack.join(', '),

@@ -1,5 +1,6 @@
 ---
 title: Study vault and agent pipeline
+seoTitle: 'Study vault: nightly Canvas sync with AI agents'
 short: 'nightly Canvas sync with AI agents'
 tagline: A nightly pipeline that pulls every course's files, deadlines and grades from Canvas into a searchable notes vault, coordinated with a separate AI planner agent.
 tier: featured

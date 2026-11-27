@@ -1,5 +1,6 @@
 ---
 title: Content pipeline service
+seoTitle: 'Content pipeline service (in progress)'
 short: 'scheduled media pipeline (building)'
 tagline: A scheduled backend pipeline that plans, renders and publishes short videos end to end, built as small restartable stages with idempotent uploads. In progress.
 tier: featured

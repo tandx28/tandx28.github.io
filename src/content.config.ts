@@ -11,6 +11,8 @@ const projects = defineCollection({
     tagline: z.string(),
     /** A few words for the terminal's ls listing. */
     short: z.string(),
+    /** Page title for search results, when "title: short" reads badly. */
+    seoTitle: z.string().optional(),
     /** featured: big card with its own page. small: compact row. lab: AI-built piece hosted under /lab/. */
     tier: z.enum(['featured', 'small', 'lab']),
     /** For lab pieces: game, film or tool. */

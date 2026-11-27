@@ -9,6 +9,9 @@ export const profile = {
   github: 'https://github.com/tandx28',
   linkedin: 'https://www.linkedin.com/in/dexun19',
   resume: '/resume.pdf',
+  /** Search-result description: kept under 160 characters so Google shows all of it. */
+  summary:
+    'NUS Computer Science student and software engineer growing into DevOps and cloud. Full-stack apps, CI/CD pipelines and AI tools, all tested.',
   blurb:
     'NUS Computer Science student and software engineer growing into DevOps and cloud. Builds full-stack apps and CI/CD pipelines, and explores what AI can do as one more tool, always with tests behind it.',
 };

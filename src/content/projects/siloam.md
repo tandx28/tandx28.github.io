@@ -1,5 +1,6 @@
 ---
 title: School website revamp
+seoTitle: 'School website revamp, student team project'
 short: 'school website revamp'
 tagline: Leading platform and quality for a student team rebuilding a school's website with SiloamXperience.
 tier: featured
